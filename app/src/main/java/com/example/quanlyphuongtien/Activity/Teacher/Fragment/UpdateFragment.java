@@ -1,5 +1,7 @@
 package com.example.quanlyphuongtien.Activity.Teacher.Fragment;
 
+import static com.example.quanlyphuongtien.Entities.Common.teacher;
+
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.graphics.Color;
@@ -22,7 +24,6 @@ import androidx.fragment.app.Fragment;
 import com.example.quanlyphuongtien.Activity.Teacher.Adapter.StudentListAdapter;
 import com.example.quanlyphuongtien.Database.FeeDBContext;
 import com.example.quanlyphuongtien.Database.StudentDBContext;
-import com.example.quanlyphuongtien.Entities.Common;
 import com.example.quanlyphuongtien.Entities.Fee;
 import com.example.quanlyphuongtien.Entities.Student;
 import com.example.quanlyphuongtien.R;
@@ -70,6 +71,7 @@ public class UpdateFragment extends Fragment {
         db = new StudentDBContext(getContext());
         feeDBContext = new FeeDBContext(getContext());
         tv_count = view.findViewById(R.id.tv_sumstudent);
+
     }
 
     //set event when click
@@ -90,6 +92,7 @@ public class UpdateFragment extends Fragment {
 
     //load list student from firebase
     private void loadDataStudent() {
+        tv_nameteacher.setText("GVCN " + teacher.getName());
         db.reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -97,12 +100,15 @@ public class UpdateFragment extends Fragment {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()
                 ) {
                     Student student = dataSnapshot.getValue(Student.class);
-                    studentList.add(student);
+                    if(student.getClassName().equals(teacher.getHeadTeacher())){
+                        studentList.add(student);
+                    }
+
                 }
                 listAdapter = new StudentListAdapter(getContext(), studentList);
                 lv_student.setAdapter(listAdapter);
                 edt_search.setAdapter(listAdapter);
-                tv_count.setText("Tổng số: "+studentList.size()+" học sinh");
+                tv_count.setText("Tổng số: " + studentList.size() + " học sinh");
             }
 
             @Override
@@ -130,13 +136,14 @@ public class UpdateFragment extends Fragment {
         edt_name = dialog.findViewById(R.id.edt_name);
         edt_classname = dialog.findViewById(R.id.tv_classname);
         btn_update = dialog.findViewById(R.id.btn_update);
+
         tv_dateofbirth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 setDialogDatePicker();
             }
         });
-
+        edt_classname.setText(teacher.getHeadTeacher());
         btn_update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -149,7 +156,7 @@ public class UpdateFragment extends Fragment {
                 Student student = new Student();
                 Fee fee = new Fee();
                 if (!edt_name.getText().toString().equals("") && !tv_dateofbirth.getText().toString().equals("")) {
-                    edt_classname.setText(Common.teacher.getHeadTeacher());
+
                     student.setId(edt_classname.getText().toString() + ((studentList.size() + 2000) + 1));
                     student.setName(edt_name.getText().toString());
                     student.setDateOfBirth(tv_dateofbirth.getText().toString());
@@ -201,6 +208,7 @@ public class UpdateFragment extends Fragment {
         TextView tv_numberplate = dialog.findViewById(R.id.tv_numberplate);
         TextView tv_vehicle = dialog.findViewById(R.id.tv_vehiclecategory);
         Button btn_update = dialog.findViewById(R.id.btn_update);
+        Button btn_addfee = dialog.findViewById(R.id.btn_addfee);
         //bind infor
         tv_id.setText(student.getId());
         edt_password.setText(student.getPassword());
@@ -220,6 +228,28 @@ public class UpdateFragment extends Fragment {
             }
         });
 
+        btn_addfee.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int yearNow = 0, monthNow = 0, dayNow = 0;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                    yearNow = java.time.LocalDate.now().getYear();
+                    monthNow = java.time.LocalDate.now().getMonthValue();
+                    dayNow = java.time.LocalDate.now().getDayOfMonth();
+                }
+                Fee fee = new Fee();
+                //set fee
+                fee.setId("F" + random.nextInt());
+                fee.setIdSV(student.getId());
+                fee.setName(student.getName());
+                fee.setConfirm(false);
+                fee.setMoney(0);
+                fee.setStartDate(dayNow + "-" + monthNow + "-" + yearNow);
+                fee.setEndDate("");
+                feeDBContext.updateFee(fee);
+                dialog.dismiss();
+            }
+        });
         btn_update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -132,6 +132,27 @@
                 android:textSize="18sp" />
 
             <TextView
+                android:id="@+id/tv_noti_vehicle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:text="Loại xe"
+                android:textColor="#1E88E5" />
+
+            <EditText
+                android:id="@+id/edt_vehicle"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/border_textview"
+                android:drawableRight="@drawable/ic_vihicle"
+                android:gravity="center_vertical"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:textSize="18sp" />
+
+            <TextView
                 android:id="@+id/tv_noti_numplate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -153,27 +174,6 @@
 
                 android:textSize="18sp" />
 
-            <TextView
-                android:id="@+id/tv_noti_vehicle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
-                android:text="Loại xe"
-                android:textColor="#1E88E5" />
-
-            <EditText
-                android:id="@+id/edt_vehicle"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:background="@drawable/border_textview"
-                android:drawableRight="@drawable/ic_vihicle"
-                android:gravity="center_vertical"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
-
-                android:textSize="18sp" />
 
             <Button
                 android:id="@+id/btn_update"
@@ -187,6 +187,8 @@
                 android:backgroundTint="#039BE5"
                 android:text="Cập nhật"
                 android:textColor="@color/white" />
+
+
 
             <Button
                 android:id="@+id/btn_delete"

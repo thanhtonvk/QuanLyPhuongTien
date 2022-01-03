@@ -1,66 +1,159 @@
 package com.example.quanlyphuongtien.Activity.Teacher.Fragment;
 
+import static com.example.quanlyphuongtien.Activity.Teacher.Fragment.UpdateFragment.studentList;
+
+import android.app.Dialog;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import com.example.quanlyphuongtien.Activity.Teacher.Adapter.StudentListAdapter;
+import com.example.quanlyphuongtien.Database.FeeDBContext;
+import com.example.quanlyphuongtien.Database.StudentDBContext;
+import com.example.quanlyphuongtien.Entities.Fee;
+import com.example.quanlyphuongtien.Entities.Student;
 import com.example.quanlyphuongtien.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link GeneralFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+import java.util.List;
+
 public class GeneralFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public GeneralFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment GenaralFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static GeneralFragment newInstance(String param1, String param2) {
-        GeneralFragment fragment = new GeneralFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_genaral, container, false);
+    }
+
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        view.findViewById(R.id.btn_dsdangky).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadListRegistered();
+            }
+        });
+        view.findViewById(R.id.btn_chuanopphi).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadListNonPay();
+            }
+        });
+        view.findViewById(R.id.btn_danopphi).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadListPaid();
+            }
+        });
+    }
+
+    private void loadListRegistered() {
+        StudentDBContext dbContext = new StudentDBContext(getContext());
+        Dialog dialog = new Dialog(getContext());
+        dialog.show();
+        dialog.setContentView(R.layout.dialog_list_registered);
+        TextView tv_mess = dialog.findViewById(R.id.tv_message);
+        tv_mess.setText("DANH SÁCH ĐÃ ĐĂNG KÝ GỬI XE");
+        List<Student> studentList = new ArrayList<>();
+        ListView lv_student = dialog.findViewById(R.id.lv_student);
+        dbContext.reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    Student student = dataSnapshot.getValue(Student.class);
+                    studentList.add(student);
+                }
+                StudentListAdapter listAdapter = new StudentListAdapter(getContext(), studentList);
+                lv_student.setAdapter(listAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void loadListNonPay() {
+        FeeDBContext dbContext = new FeeDBContext(getContext());
+        Dialog dialog = new Dialog(getContext());
+        dialog.show();
+        dialog.setContentView(R.layout.dialog_list_registered);
+        TextView tv_mess = dialog.findViewById(R.id.tv_message);
+        tv_mess.setText("DANH SÁCH CHƯA ĐÓNG PHÍ GỬI XE");
+        List<Student> studentList = new ArrayList<>();
+        ListView lv_student = dialog.findViewById(R.id.lv_student);
+        dbContext.reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    Fee fee = dataSnapshot.getValue(Fee.class);
+                    if(!fee.isConfirm()){
+                        studentList.add(getStudent(fee.getIdSV()));
+                    }
+
+
+                }
+                StudentListAdapter listAdapter = new StudentListAdapter(getContext(), studentList);
+                lv_student.setAdapter(listAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+    private void loadListPaid() {
+        FeeDBContext dbContext = new FeeDBContext(getContext());
+        Dialog dialog = new Dialog(getContext());
+        dialog.show();
+        dialog.setContentView(R.layout.dialog_list_registered);
+        TextView tv_mess = dialog.findViewById(R.id.tv_message);
+        tv_mess.setText("DANH SÁCH ĐÃ ĐÓNG PHÍ GỬI XE");
+        List<Student> studentList = new ArrayList<>();
+        ListView lv_student = dialog.findViewById(R.id.lv_student);
+        dbContext.reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    Fee fee = dataSnapshot.getValue(Fee.class);
+                    if(fee.isConfirm()){
+                        studentList.add(getStudent(fee.getIdSV()));
+                    }
+
+
+                }
+                StudentListAdapter listAdapter = new StudentListAdapter(getContext(), studentList);
+                lv_student.setAdapter(listAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+    private Student getStudent(String ID) {
+        Student rs = new Student();
+        for (Student student : studentList
+        ) {
+            if (student.getId().equals(ID)) rs = student;
+        }
+        return rs;
     }
 }

@@ -134,14 +134,14 @@
 
             <Button
                 android:id="@+id/btn_confirm"
-                android:layout_width="100dp"
+                android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:layout_gravity="center"
                 android:layout_marginBottom="20dp"
                 android:background="@drawable/border_textview"
                 android:backgroundTint="#039BE5"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
                 android:text="Xác nhận"
                 android:textAllCaps="false"
                 android:textColor="@color/white"

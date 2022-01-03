@@ -1,7 +1,9 @@
 package com.example.quanlyphuongtien.Activity.Teacher.Fragment;
 
 import static com.example.quanlyphuongtien.Activity.Teacher.Fragment.UpdateFragment.studentList;
+import static com.example.quanlyphuongtien.Entities.Common.teacher;
 
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,6 +13,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -48,6 +52,7 @@ public class ConfirmFragment extends Fragment {
     FeeListAdapter adapter;
     List<Fee> feeList;
     TextView tv_sum;
+    TextView tv_nameteacher;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -72,10 +77,12 @@ public class ConfirmFragment extends Fragment {
         lv_fee = view.findViewById(R.id.lv_fee);
         feeList = new ArrayList<>();
         tv_sum = view.findViewById(R.id.tv_sumstudent);
+        tv_nameteacher = view.findViewById(R.id.tv_name);
     }
 
     //Lấy danh sách nộp phí
     private void loadListFee() {
+        tv_nameteacher.setText("GVCN " + teacher.getName());
         db.reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -83,7 +90,10 @@ public class ConfirmFragment extends Fragment {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()
                 ) {
                     Fee fee = dataSnapshot.getValue(Fee.class);
-                    feeList.add(fee);
+                    if (getStudent(fee.getIdSV()).getClassName().equals(teacher.getHeadTeacher())) {
+                        feeList.add(fee);
+                    }
+
                 }
                 adapter = new FeeListAdapter(getContext(), feeList);
                 lv_fee.setAdapter(adapter);
@@ -101,14 +111,15 @@ public class ConfirmFragment extends Fragment {
 
     //set dialog info
     private void setDialogFeeInfo(int postion) {
-        String month[] = new String[]{"1", "3", "6", "12"};
+        String month[] = new String[]{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"};
         sp_adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, month);
         Fee fee = feeList.get(postion);
         Student student = getStudent(fee.getIdSV());
         Dialog dialog = new Dialog(getContext());
         dialog.setContentView(R.layout.dialog_info_fee);
         dialog.show();
-        TextView tv_id, tv_name, tv_vehicle, tv_startDate, tv_endDate, tv_Money;
+        TextView tv_id, tv_name, tv_vehicle, tv_startDate, tv_endDate;
+        EditText tv_Money;
         Spinner sp_month = dialog.findViewById(R.id.sp_month);
         tv_id = dialog.findViewById(R.id.tv_id);
         tv_name = dialog.findViewById(R.id.tv_name);
@@ -118,6 +129,14 @@ public class ConfirmFragment extends Fragment {
         tv_Money = dialog.findViewById(R.id.tv_money);
         Button btn_confirm = dialog.findViewById(R.id.btn_update);
         Button btn_delete = dialog.findViewById(R.id.btn_delete);
+
+        btn_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                db.deleteFee(fee.getId());
+                dialog.dismiss();
+            }
+        });
         sp_month.setAdapter(sp_adapter);
         if (fee.isConfirm()) {
             btn_confirm.setVisibility(View.GONE);
@@ -145,12 +164,24 @@ public class ConfirmFragment extends Fragment {
             sp_month.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    setDate(tv_startDate.getText().toString(), month[i], tv_endDate, tv_Money);
+                    setDate(month[i], tv_Money);
                 }
 
                 @Override
                 public void onNothingSelected(AdapterView<?> adapterView) {
 
+                }
+            });
+            tv_startDate.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    setDialogDatePicker(tv_startDate);
+                }
+            });
+            tv_endDate.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    setDialogDatePicker(tv_endDate);
                 }
             });
             btn_confirm.setOnClickListener(new View.OnClickListener() {
@@ -165,17 +196,28 @@ public class ConfirmFragment extends Fragment {
         }
     }
 
-    private void setDate(String date, String month, TextView tv_enddate, TextView tv_money) {
-        String[] arr = date.split("-");
-        if (Integer.parseInt(arr[1]) + Integer.parseInt(month) < 13) {
-            int endMonth = Integer.parseInt(arr[1]) + Integer.parseInt(month);
-            tv_enddate.setText(arr[0] + "-" + endMonth + "-" + arr[2]);
+    //set datepicker dialog
+    private void setDialogDatePicker(TextView tv_date) {
+        int selectedYear = 0;
+        int selectedMonth = 0;
+        int selectedDay = 0;
 
-        } else {
-            int endMonth = (Integer.parseInt(arr[1]) + Integer.parseInt(month)) - 12;
-            int endYear = (Integer.parseInt(arr[2])) + 1;
-            tv_enddate.setText(arr[0] + "-" + endMonth + "-" + endYear);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            selectedYear = java.time.LocalDate.now().getYear();
+            selectedMonth = java.time.LocalDate.now().getMonthValue();
+            selectedDay = java.time.LocalDate.now().getDayOfMonth();
         }
+        DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                tv_date.setText(String.format("%s/%s/%s", i2, i1 + 1, i));
+            }
+        };
+        DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), dateSetListener, selectedYear, selectedMonth, selectedDay);
+        datePickerDialog.show();
+    }
+
+    private void setDate(String month, TextView tv_money) {
         tv_money.setText("" + (Integer.parseInt(month) * 15000));
     }
 

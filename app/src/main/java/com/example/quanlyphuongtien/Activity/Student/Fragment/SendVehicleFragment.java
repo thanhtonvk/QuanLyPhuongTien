@@ -107,7 +107,7 @@ public class SendVehicleFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 TicketDBContext db = new TicketDBContext(getContext());
-                if (Common.contentQR != null) {
+                if (Common.contentQR == null) {
                     Toast.makeText(getContext(), "QR không hợp lệ", Toast.LENGTH_LONG).show();
                 } else {
                     Ticket ticket = new Ticket();
@@ -119,7 +119,6 @@ public class SendVehicleFragment extends Fragment {
                     ticket.setStatus(false);
                     ticket.setSendDate(formatter.format(date));
                     ticket.setIdhs(student.getId());
-
                     if (cb_othervehicle.isChecked()) {
                         if (edt_plate.getText().toString().equals("")) {
                             Toast.makeText(getContext(), "Phải nhập biển số", Toast.LENGTH_LONG).show();
@@ -130,10 +129,20 @@ public class SendVehicleFragment extends Fragment {
                             Common.contentQR = null;
                         }
                     } else {
-                        ticket.setVehicle(student.getVehicleCategory());
-                        ticket.setPlate(student.getNumberPlate());
-                        db.addTicket(ticket);
-                        Common.contentQR = null;
+                        if (student.getVehicleCategory() != null) {
+                            if(student.getNumberPlate()!=null){
+                                ticket.setVehicle(student.getVehicleCategory());
+                                ticket.setPlate(student.getNumberPlate());
+                                db.addTicket(ticket);
+                                Common.contentQR = null;
+                            }else{
+                                Toast.makeText(getContext(),"Vui lòng cập nhật biển số xe",Toast.LENGTH_LONG).show();
+                            }
+
+                        } else {
+                            Toast.makeText(getContext(), "Vui lòng cập nhật loại xe", Toast.LENGTH_LONG).show();
+                        }
+
                     }
                 }
 

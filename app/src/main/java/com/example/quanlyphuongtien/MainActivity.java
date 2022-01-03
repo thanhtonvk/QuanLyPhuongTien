@@ -21,6 +21,8 @@ import com.example.quanlyphuongtien.Activity.Student.StudentActivity;
 import com.example.quanlyphuongtien.Activity.Teacher.TeacherActivity;
 import com.example.quanlyphuongtien.Database.AdminDBContext;
 import com.example.quanlyphuongtien.Database.ProtectorDBContext;
+import com.example.quanlyphuongtien.Database.Remember;
+import com.example.quanlyphuongtien.Database.SQLiteHelper;
 import com.example.quanlyphuongtien.Database.StudentDBContext;
 import com.example.quanlyphuongtien.Database.TeacherDBContext;
 import com.example.quanlyphuongtien.Entities.Admin;
@@ -43,16 +45,38 @@ public class MainActivity extends AppCompatActivity {
     CheckBox cb_remember;
     Button btn_show;
 
+    SQLiteHelper db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
-
+        db = new SQLiteHelper(MainActivity.this);
+        Remember remember = db.GetRemember();
+        loadRemember(remember);
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Remember remember = new Remember();
+                if (cb_remember.isChecked()) {
+                    db.Delete();
+                    if (rd_student.isChecked()) {
+                        remember = new Remember(edt_username.getText().toString(), edt_password.getText().toString(), 0, 1);
+                    }
+                    if (rd_teacher.isChecked()) {
+                        remember = new Remember(edt_username.getText().toString(), edt_password.getText().toString(), 1, 1);
+                    }
+                    if (rd_protector.isChecked()) {
+                        remember = new Remember(edt_username.getText().toString(), edt_password.getText().toString(), 2, 1);
+                    }
+                    if (rd_admin.isChecked()) {
+                        remember = new Remember(edt_username.getText().toString(), edt_password.getText().toString(), 3, 1);
+                    }
+                    db.Add(remember);
+                } else {
+                    db.Delete();
+                }
                 Login();
             }
         });
@@ -60,14 +84,32 @@ public class MainActivity extends AppCompatActivity {
         btn_show.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 edt_password.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME);
-
-
             }
         });
+
     }
 
+    public void loadRemember(Remember remember) {
+        if(remember!=null){
+            edt_username.setText(remember.getUsername());
+            edt_password.setText(remember.getPassword());
+            if (remember.getCheck() == 0) {
+                rd_student.setChecked(true);
+            }
+            if (remember.getCheck() == 1) {
+                rd_teacher.setChecked(true);
+            }
+            if (remember.getCheck() == 2) {
+                rd_protector.setChecked(true);
+            }
+            if (remember.getCheck() == 3) {
+                rd_admin.setChecked(true);
+            }
+            cb_remember.setChecked(true);
+        }
+
+    }
 
     public void initView() {
         edt_username = findViewById(R.id.edt_username);

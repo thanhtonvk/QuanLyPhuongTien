@@ -153,7 +153,7 @@
                 android:gravity="center_vertical"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
-                android:text="89-F1 62343"
+
                 android:textSize="18sp" />
 
             <TextView
@@ -175,7 +175,7 @@
                 android:gravity="center_vertical"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
-                android:text="Xe điện"
+
                 android:textSize="18sp" />
 
             <Button
@@ -190,7 +190,17 @@
                 android:backgroundTint="#039BE5"
                 android:text="Cập nhật"
                 android:textColor="@color/white" />
-
+            <Button
+                android:id="@+id/btn_addfee"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/border_textview"
+                android:backgroundTint="#FDD835"
+                android:text="Thêm đóng phí"
+                android:textColor="@color/white" />
             <Button
                 android:id="@+id/btn_delete"
                 android:layout_width="match_parent"

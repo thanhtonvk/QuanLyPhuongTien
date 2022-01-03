@@ -43,7 +43,7 @@ public class FeeListAdapter extends ArrayAdapter<Fee> {
         CheckBox cb_confirm = convertView.findViewById(R.id.cb_confirm);
         Fee fee = feeList.get(position);
         tv_stt.setText((position + 1) + "");
-        tv_id.setText(fee.getId());
+        tv_id.setText(fee.getIdSV());
         tv_name.setText(fee.getName());
         if (fee.getMoney() == 0) {
             tv_money.setText("");

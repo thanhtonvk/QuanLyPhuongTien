@@ -110,6 +110,7 @@ public class InfoStudentFragment extends Fragment {
         EditText edt_numberplate = dialog.findViewById(R.id.edt_numplate);
         EditText edt_vehicle = dialog.findViewById(R.id.edt_vehicle);
         //bind infor
+        edt_numberplate.setText(student.getId());
         tv_id.setText(student.getId());
         edt_password.setText(student.getPassword());
         edt_name.setText(student.getName());

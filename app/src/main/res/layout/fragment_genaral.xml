@@ -1,14 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".Activity.Teacher.Fragment.GeneralFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="BÁO CÁO THỐNG KÊ"
+        android:textColor="#1E88E5"
+        android:textSize="20dp"
+        android:textStyle="bold" />
 
-</FrameLayout>
+    <Button
+        android:id="@+id/btn_dsdangky"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_margin="20dp"
+        android:background="@drawable/border_textview"
+        android:gravity="center"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:text="Danh sách học sinh đăng ký gửi xe"
+        android:textAllCaps="false"
+        android:textColor="#1E88E5" />
+
+    <Button
+        android:id="@+id/btn_danopphi"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/border_textview"
+
+        android:gravity="center"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:text="Danh sách học sinh đã nộp phí"
+        android:textAllCaps="false"
+        android:textColor="#1E88E5" />
+
+    <Button
+        android:id="@+id/btn_chuanopphi"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/border_textview"
+        android:gravity="center"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:text="Danh sách học sinh chưa nộp"
+        android:textAllCaps="false"
+        android:textColor="#1E88E5"
+        tools:ignore="DuplicateIds" />
+</LinearLayout>
