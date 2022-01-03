@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_info_protector"
+        android:icon="@drawable/ic_info"
+        android:title="Thông tin" />
+    <item
+        android:id="@+id/menu_spsend_protector"
+        android:icon="@drawable/ic_send"
+        android:title="Hỗ trợ gửi xe" />
+    <item
+        android:id="@+id/menu_spreceive_protector"
+        android:icon="@drawable/ic_receive"
+        android:title="Hỗ trợ nhận xe" />
+    <item
+        android:id="@+id/menu_report_protector"
+        android:icon="@drawable/ic_report"
+        android:title="Báo cáo" />
+</menu>

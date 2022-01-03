@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_info_student"
+        android:icon="@drawable/ic_info"
+        android:title="Thông tin" />
+    <item
+        android:id="@+id/menu_send_student"
+        android:icon="@drawable/ic_send"
+        android:title="Gửi xe" />
+    <item
+        android:id="@+id/menu_recive_student"
+        android:icon="@drawable/ic_receive"
+        android:title="Nhận xe" />
+</menu>

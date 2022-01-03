@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/tv_stt"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/style_table"
+        android:gravity="center"
+        android:text="STT"
+        android:textColor="#1E88E5"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/tv_id"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/style_table"
+        android:gravity="center"
+        android:text="Mã học sinh"
+        android:textColor="#1E88E5"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/style_table"
+        android:gravity="center"
+        android:text="Họ và tên"
+        android:textColor="#1E88E5"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/tv_dateofbirth"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/style_table"
+        android:gravity="center"
+        android:text="Ngày sinh"
+        android:textColor="#1E88E5"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/tv_classname"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@drawable/style_table"
+        android:gravity="center"
+        android:text="Lớp"
+        android:textColor="#1E88E5"
+        android:textSize="18sp" />
+</LinearLayout>

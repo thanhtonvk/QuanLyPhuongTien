@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:gravity="center"
+        android:text="Phần mềm quản lý phương tiện"
+        android:textColor="#1E88E5"
+        android:textSize="25sp"
+        android:textStyle="bold" />
+
+
+    <EditText
+        android:id="@+id/edt_username"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/border_textview"
+        android:drawableLeft="@drawable/ic_person"
+        android:hint="Nhập tài khoản"
+        android:paddingLeft="15dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/border_textview"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/edt_password"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:backgroundTint="@color/white"
+            android:drawableLeft="@drawable/ic_lock"
+            android:hint="Nhập mật khẩu"
+            android:inputType="textPassword"
+            android:paddingLeft="15dp" />
+
+        <Button
+            android:id="@+id/btn_show_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:background="@drawable/ic_eye" />
+    </LinearLayout>
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/rd_student"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Học sinh"
+            android:textColor="@color/black" />
+
+        <RadioButton
+            android:id="@+id/rd_teacher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Giáo viên" />
+
+        <RadioButton
+            android:id="@+id/rd_protector"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="Bảo vệ" />
+
+        <RadioButton
+
+            android:id="@+id/rd_admin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Quản trị viên"
+            android:textColor="@color/black" />
+    </RadioGroup>
+
+    <CheckBox
+        android:id="@+id/cb_remember"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:text="Nhớ đăng nhập" />
+
+    <Button
+        android:id="@+id/btn_login"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_margin="20dp"
+        android:background="@drawable/border_editext"
+        android:backgroundTint="#039BE5"
+        android:text="Đăng nhập"
+        android:textColor="@color/white" />
+</LinearLayout>

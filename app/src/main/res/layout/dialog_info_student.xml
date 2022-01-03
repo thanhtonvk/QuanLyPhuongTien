@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="400dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:src="@drawable/ic_student" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Thông tin học sinh"
+                android:textColor="#1E88E5"
+                android:textSize="20sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:text="Tài khoản đăng nhập"
+                android:textColor="#1E88E5" />
+
+            <TextView
+                android:id="@+id/tv_id"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/border_textview"
+                android:drawableRight="@drawable/ic_code"
+                android:enabled="false"
+                android:gravity="center_vertical"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/tv_noti_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:text="Mật khẩu đăng nhập"
+                android:textColor="#1E88E5" />
+
+            <EditText
+                android:id="@+id/edt_password"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/border_textview"
+                android:drawableRight="@drawable/ic_lock"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/tv_noti_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:text="Họ tên"
+                android:textColor="#1E88E5" />
+
+            <EditText
+                android:id="@+id/edt_name"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/border_textview"
+                android:drawableRight="@drawable/ic_person"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/tv_noti_dateofbirth"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:text="Ngày sinh"
+                android:textColor="#1E88E5" />
+
+            <TextView
+                android:id="@+id/edt_dateofbirth"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginLeft="20dp"
+
+                android:layout_marginRight="20dp"
+                android:background="@drawable/border_textview"
+                android:drawableRight="@drawable/ic_calendar"
+                android:gravity="center_vertical"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/tv_noti_classname"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:text="Lớp"
+                android:textColor="#1E88E5" />
+
+            <EditText
+                android:id="@+id/tv_classname"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/border_textview"
+                android:drawableRight="@drawable/ic_hat"
+                android:gravity="center_vertical"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/tv_noti_numplate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:text="Biển số xe"
+                android:textColor="#1E88E5" />
+
+            <EditText
+                android:id="@+id/edt_numplate"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/border_textview"
+                android:drawableRight="@drawable/ic_plate"
+                android:gravity="center_vertical"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/tv_noti_vehicle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:text="Loại xe"
+                android:textColor="#1E88E5" />
+
+            <EditText
+                android:id="@+id/edt_vehicle"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/border_textview"
+                android:drawableRight="@drawable/ic_vihicle"
+                android:gravity="center_vertical"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/btn_update"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/border_textview"
+                android:backgroundTint="#039BE5"
+                android:text="Cập nhật"
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/btn_delete"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/border_textview"
+                android:backgroundTint="#E53935"
+                android:text="Xóa"
+                android:textColor="@color/white" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

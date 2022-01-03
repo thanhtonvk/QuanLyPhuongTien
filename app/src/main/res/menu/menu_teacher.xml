@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_info_teacher"
+        android:icon="@drawable/ic_info"
+        android:title="Thông tin" />
+    <item
+        android:id="@+id/menu_update_teacher"
+        android:icon="@drawable/ic_update"
+        android:title="Cập nhật học sinh" />
+    <item
+        android:id="@+id/menu_confirm_teacher"
+        android:icon="@drawable/ic_confirm"
+        android:title="Xác  hận nộp phí" />
+    <item
+        android:id="@+id/menu_add_teacher"
+        android:icon="@drawable/ic_add"
+        android:title="Tổng hợp" />
+</menu>
