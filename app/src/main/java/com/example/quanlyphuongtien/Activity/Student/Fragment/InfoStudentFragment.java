@@ -191,7 +191,7 @@ public class InfoStudentFragment extends Fragment {
                 tv_dateofbirth.setText(String.format("%s/%s/%s", i2, i1 + 1, i));
             }
         };
-        DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), dateSetListener, selectedYear, selectedMonth, selectedDay);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), android.R.style.Theme_Holo_Dialog_NoActionBar, dateSetListener, selectedYear, selectedMonth, selectedDay);
         datePickerDialog.show();
     }
 

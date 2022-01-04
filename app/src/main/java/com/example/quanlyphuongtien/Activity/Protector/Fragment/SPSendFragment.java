@@ -2,6 +2,7 @@ package com.example.quanlyphuongtien.Activity.Protector.Fragment;
 
 import static com.example.quanlyphuongtien.Entities.Common.student;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -23,6 +24,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.quanlyphuongtien.Activity.Protector.Adapter.ListStudentAdapter;
+import com.example.quanlyphuongtien.Activity.Protector.FaceRecognitionActivity;
 import com.example.quanlyphuongtien.Database.StudentDBContext;
 import com.example.quanlyphuongtien.Database.TicketDBContext;
 import com.example.quanlyphuongtien.Entities.Student;
@@ -55,6 +57,12 @@ public class SPSendFragment extends Fragment {
         loadInfo();
         onClick();
         loadDatabase();
+        view.findViewById(R.id.btn_face).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getContext(), FaceRecognitionActivity.class));
+            }
+        });
     }
 
     EditText edt_search;

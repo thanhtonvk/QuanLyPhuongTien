@@ -15,6 +15,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity
+            android:name=".Activity.Protector.FaceRecognitionActivity"
+            android:exported="true" />
+        <activity
             android:name=".Activity.Protector.ProtectorActivity"
             android:exported="true" />
         <activity
