@@ -103,7 +103,7 @@ public class FaceRecognitionActivity extends AppCompatActivity {
                     Model.Outputs outputs = model.process(inputFeature0);
                     TensorBuffer outputFeature0 = outputs.getOutputFeature0AsTensorBuffer();
                     int max = getMax(outputFeature0.getFloatArray());
-                    tv_predict.setText("Đây là "+GetLabels().get(max) + "chính xác: " + outputFeature0.getFloatArray()[max]);
+                    tv_predict.setText("Đây là "+GetLabels().get(max) + "\nĐộ chính xác: " + outputFeature0.getFloatArray()[max]);
                     // Releases model resources if no longer used.
                     model.close();
                 } catch (IOException e) {
