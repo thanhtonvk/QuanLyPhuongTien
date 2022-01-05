@@ -90,14 +90,18 @@ public class ConfirmFragment extends Fragment {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()
                 ) {
                     Fee fee = dataSnapshot.getValue(Fee.class);
-                    if (getStudent(fee.getIdSV()).getClassName().equals(teacher.getHeadTeacher())) {
-                        feeList.add(fee);
-                    }
+
+                            feeList.add(fee);
+
+
 
                 }
-                adapter = new FeeListAdapter(getContext(), feeList);
-                lv_fee.setAdapter(adapter);
-                tv_sum.setText("Danh sách nộp: " + feeList.size());
+                if(getContext()!=null){
+                    adapter = new FeeListAdapter(getContext(), feeList);
+                    lv_fee.setAdapter(adapter);
+                    tv_sum.setText("Danh sách nộp: " + feeList.size());
+                }
+
             }
 
             @Override
