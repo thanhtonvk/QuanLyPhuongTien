@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    tools:context=".Activity.Protector.FaceRecognitionActivity">
+    tools:context=".Activity.Protector.FaceRecognitionReceiveActivity">
 
     <LinearLayout
         android:id="@+id/layout"
@@ -64,7 +64,6 @@
             android:visibility="gone" />
     </RelativeLayout>
 
-
     <TextView
         android:id="@+id/tv_id"
         android:layout_width="300dp"
@@ -106,6 +105,4 @@
         android:backgroundTint="#FFB300"
         android:text="Xác nhận"
         android:textColor="@color/white" />
-
-
 </LinearLayout>

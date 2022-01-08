@@ -1,7 +1,6 @@
 package com.example.quanlyphuongtien.Activity.Protector;
 
 import static com.example.quanlyphuongtien.Activity.Teacher.Fragment.UpdateFragment.studentList;
-import static com.example.quanlyphuongtien.Entities.Common.student;
 
 import android.Manifest;
 import android.app.Activity;
@@ -25,7 +24,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -67,15 +65,16 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
-public class FaceRecognitionActivity extends AppCompatActivity {
+public class FaceRecognitionReceiveActivity extends AppCompatActivity {
+
     Button btn_open, btn_confirm;
     ImageView img;
     TextView tv_id, tv_name;
     int request = 123;
     Bitmap bitmap;
     ByteBuffer imgData;
+    int check = 0;
     FloatingActionButton btn_capture;
     private static final String TAG = "FaceTracker";
     private CameraSource mCameraSource = null;
@@ -83,22 +82,22 @@ public class FaceRecognitionActivity extends AppCompatActivity {
     private GraphicOverlay mGraphicOverlay;
     private static final int RC_HANDLE_GMS = 9001;
     private static final int RC_HANDLE_CAMERA_PERM = 2;
-    int check = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_face_recognition);
+        setContentView(R.layout.activity_face_recognition_receive);
         initView();
         onClick();
-        dbContext = new StudentDBContext(FaceRecognitionActivity.this);
-        loadDatabase();
+        loadListStudent();
+        loadListTicket();
         int rc = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
         if (rc == PackageManager.PERMISSION_GRANTED) {
             createCameraSource();
         } else {
             requestCameraPermission();
         }
+
 
     }
 
@@ -134,7 +133,6 @@ public class FaceRecognitionActivity extends AppCompatActivity {
     int DIM_PIXEL_SIZE = 3;
 
     private void onClick() {
-        Random random = new Random();
         btn_open.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -148,29 +146,19 @@ public class FaceRecognitionActivity extends AppCompatActivity {
         btn_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (student != null) {
-                    TicketDBContext db = new TicketDBContext(FaceRecognitionActivity.this);
-                    Ticket ticket = new Ticket();
-                    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-                    Date date = new Date();
-                    ticket.setId(random.nextInt() + "");
-                    ticket.setName(student.getName());
-                    ticket.setStatus(false);
-                    ticket.setSendDate(formatter.format(date));
-                    ticket.setIdhs(student.getId());
-                    if (student.getVehicleCategory() == null || student.getNumberPlate() == null) {
-                        Toast.makeText(FaceRecognitionActivity.this, "Chưa đăng ký biển số", Toast.LENGTH_LONG).show();
-                    } else {
-                        ticket.setVehicle(student.getVehicleCategory());
-                        ticket.setPlate(student.getNumberPlate());
-                        db.addTicket(ticket);
-                        finish();
-                    }
+                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                Date date = new Date();
+                TicketDBContext db = new TicketDBContext(FaceRecognitionReceiveActivity.this);
+                if (getTicket(Common.student.getId()) != null) {
+                    Ticket ticket = getTicket(Common.student.getId());
+                    ticket.setReceveDate(formatter.format(date));
+                    ticket.setStatus(true);
+                    db.updateTicket(ticket);
+                    finish();
                 }
 
             }
         });
-
         btn_capture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -184,7 +172,7 @@ public class FaceRecognitionActivity extends AppCompatActivity {
                             mPreview.setVisibility(View.GONE);
                             img.setImageBitmap(bitmap);
                             try {
-                                Model model = Model.newInstance(FaceRecognitionActivity.this);
+                                Model model = Model.newInstance(FaceRecognitionReceiveActivity.this);
 
                                 // Creates inputs for reference.
                                 TensorBuffer inputFeature0 = TensorBuffer.createFixedSize(new int[]{1, 224, 224, 3}, DataType.FLOAT32);
@@ -217,49 +205,6 @@ public class FaceRecognitionActivity extends AppCompatActivity {
 
             }
         });
-    }
-
-    private Bitmap detectFace(Bitmap bitmap) {
-        BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
-        bitmapOptions.inMutable = true;
-        Bitmap defaultBitmap = bitmap;
-        Paint rectPaint = new Paint();
-        rectPaint.setStrokeWidth(5);
-        rectPaint.setColor(Color.CYAN);
-        rectPaint.setStyle(Paint.Style.STROKE);
-
-        Bitmap temporaryBitmap = Bitmap.createBitmap(defaultBitmap.getWidth(), defaultBitmap
-                .getHeight(), Bitmap.Config.RGB_565);
-        Canvas canvas = new Canvas(temporaryBitmap);
-        canvas.drawBitmap(defaultBitmap, 0, 0, null);
-
-        FaceDetector faceDetector = new FaceDetector.Builder(FaceRecognitionActivity.this)
-                .setTrackingEnabled(false)
-                .setLandmarkType(FaceDetector.ALL_LANDMARKS)
-                .build();
-        if (!faceDetector.isOperational()) {
-            new AlertDialog.Builder(FaceRecognitionActivity.this)
-                    .setMessage("Face Detector could not be set up on your device :(")
-                    .show();
-        }
-
-        Frame frame = new Frame.Builder().setBitmap(defaultBitmap).build();
-        SparseArray<Face> sparseArray = faceDetector.detect(frame);
-        float left = 0, right = 0, top = 0, bottom = 0;
-        for (int i = 0; i < sparseArray.size(); i++) {
-            Face face = sparseArray.valueAt(i);
-            left = face.getPosition().x;
-            top = face.getPosition().y;
-            right = left + face.getWidth();
-            bottom = top + face.getHeight();
-            float cornerRadius = 2.0f;
-            RectF rectF = new RectF(left, top, right, bottom);
-            canvas.drawRoundRect(rectF, cornerRadius, cornerRadius, rectPaint);
-        }
-        faceDetector.release();
-        Bitmap result = Bitmap.createBitmap(bitmap, (int) left, (int) top, (int) right - (int) left, (int) bottom - (int) top);
-        img.setImageDrawable(new BitmapDrawable(getResources(), result));
-        return result;
     }
 
     private static final float IMAGE_MEAN = 127.5f;
@@ -297,10 +242,11 @@ public class FaceRecognitionActivity extends AppCompatActivity {
             img.setVisibility(View.VISIBLE);
             mPreview.setVisibility(View.GONE);
             img.setImageURI(data.getData());
+            img.setImageURI(data.getData());
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
                 try {
-                    Model model = Model.newInstance(FaceRecognitionActivity.this);
+                    Model model = Model.newInstance(FaceRecognitionReceiveActivity.this);
 
                     // Creates inputs for reference.
                     TensorBuffer inputFeature0 = TensorBuffer.createFixedSize(new int[]{1, 224, 224, 3}, DataType.FLOAT32);
@@ -312,7 +258,7 @@ public class FaceRecognitionActivity extends AppCompatActivity {
                     Model.Outputs outputs = model.process(inputFeature0);
                     TensorBuffer outputFeature0 = outputs.getOutputFeature0AsTensorBuffer();
                     int max = getMax(outputFeature0.getFloatArray());
-                    tv_id.setText("Mã học sinh" + GetLabels().get(max));
+                    tv_id.setText("Mã học sinh: " + GetLabels().get(max));
                     if (getStudent(GetLabels().get(max)).getName() != null) {
                         tv_name.setText("Họ tên: " + getStudent(GetLabels().get(max)).getName());
                         Common.student = getStudent(GetLabels().get(max));
@@ -335,9 +281,9 @@ public class FaceRecognitionActivity extends AppCompatActivity {
         img = findViewById(R.id.img);
         tv_name = findViewById(R.id.tv_name);
         tv_id = findViewById(R.id.tv_id);
+        btn_capture = findViewById(R.id.btn_capture);
         mPreview = findViewById(R.id.preview);
         mGraphicOverlay = findViewById(R.id.faceOverlay);
-        btn_capture = findViewById(R.id.btn_capture);
     }
 
     private int getMax(float[] arr) {
@@ -361,9 +307,17 @@ public class FaceRecognitionActivity extends AppCompatActivity {
         return rs;
     }
 
-    StudentDBContext dbContext;
+    private Ticket getTicket(String IDHS) {
+        Ticket rs = new Ticket();
+        for (Ticket ticket : ticketList) {
+            if (ticket.getIdhs().equals(IDHS) && !ticket.isStatus()) rs = ticket;
+        }
+        return rs;
+    }
 
-    private void loadDatabase() {
+
+    private void loadListStudent() {
+        StudentDBContext dbContext = new StudentDBContext(FaceRecognitionReceiveActivity.this);
         dbContext.reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -372,6 +326,75 @@ public class FaceRecognitionActivity extends AppCompatActivity {
                 ) {
                     Student student = dataSnapshot.getValue(Student.class);
                     studentList.add(student);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
+
+    private Bitmap detectFace(Bitmap bitmap) {
+        BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+        bitmapOptions.inMutable = true;
+        Bitmap defaultBitmap = bitmap;
+        Paint rectPaint = new Paint();
+        rectPaint.setStrokeWidth(5);
+        rectPaint.setColor(Color.CYAN);
+        rectPaint.setStyle(Paint.Style.STROKE);
+
+        Bitmap temporaryBitmap = Bitmap.createBitmap(defaultBitmap.getWidth(), defaultBitmap
+                .getHeight(), Bitmap.Config.RGB_565);
+        Canvas canvas = new Canvas(temporaryBitmap);
+        canvas.drawBitmap(defaultBitmap, 0, 0, null);
+
+        FaceDetector faceDetector = new FaceDetector.Builder(FaceRecognitionReceiveActivity.this)
+                .setTrackingEnabled(false)
+                .setLandmarkType(FaceDetector.ALL_LANDMARKS)
+                .build();
+        if (!faceDetector.isOperational()) {
+            new AlertDialog.Builder(FaceRecognitionReceiveActivity.this)
+                    .setMessage("Face Detector could not be set up on your device :(")
+                    .show();
+        }
+
+        Frame frame = new Frame.Builder().setBitmap(defaultBitmap).build();
+        SparseArray<Face> sparseArray = faceDetector.detect(frame);
+        float left = 0, right = 0, top = 0, bottom = 0;
+        for (int i = 0; i < sparseArray.size(); i++) {
+            Face face = sparseArray.valueAt(i);
+            left = face.getPosition().x;
+            top = face.getPosition().y;
+            right = left + face.getWidth();
+            bottom = top + face.getHeight();
+            float cornerRadius = 2.0f;
+            RectF rectF = new RectF(left, top, right, bottom);
+            canvas.drawRoundRect(rectF, cornerRadius, cornerRadius, rectPaint);
+        }
+        faceDetector.release();
+        Bitmap result = Bitmap.createBitmap(bitmap, (int) left, (int) top, (int) right - (int) left, (int) bottom - (int) top);
+        img.setImageDrawable(new BitmapDrawable(getResources(), result));
+        return result;
+    }
+
+    List<Ticket> ticketList;
+
+    private void loadListTicket() {
+        TicketDBContext dbContext = new TicketDBContext(FaceRecognitionReceiveActivity.this);
+        dbContext.reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                ticketList = new ArrayList<>();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()
+                ) {
+                    Ticket ticket = dataSnapshot.getValue(Ticket.class);
+                    if (!ticket.isStatus()) {
+                        ticketList.add(ticket);
+                    }
+
                 }
             }
 
@@ -412,7 +435,7 @@ public class FaceRecognitionActivity extends AppCompatActivity {
                 .setMode(FaceDetector.ACCURATE_MODE)
                 .build();
         detector.setProcessor(
-                new MultiProcessor.Builder<>(new GraphicFaceTrackerFactory(mGraphicOverlay, FaceRecognitionActivity.this))
+                new MultiProcessor.Builder<>(new GraphicFaceTrackerFactory(mGraphicOverlay, FaceRecognitionReceiveActivity.this))
                         .build());
         mCameraSource = new CameraSource.Builder(context, detector)
                 .setRequestedPreviewSize(1024, 1280)
@@ -487,5 +510,4 @@ public class FaceRecognitionActivity extends AppCompatActivity {
             }
         }
     }
-
 }

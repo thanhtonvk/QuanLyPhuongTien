@@ -10,7 +10,8 @@
         <entry key="..\:/Android/QuanLyPhuongTien/app/src/main/res/drawable/style_button.xml" value="0.3828125" />
         <entry key="..\:/Android/QuanLyPhuongTien/app/src/main/res/drawable/style_table.xml" value="0.3828125" />
         <entry key="..\:/Android/QuanLyPhuongTien/app/src/main/res/layout/activity_admin.xml" value="0.33" />
-        <entry key="..\:/Android/QuanLyPhuongTien/app/src/main/res/layout/activity_face_recognition.xml" value="0.52890625" />
+        <entry key="..\:/Android/QuanLyPhuongTien/app/src/main/res/layout/activity_face_recognition.xml" value="0.25" />
+        <entry key="..\:/Android/QuanLyPhuongTien/app/src/main/res/layout/activity_face_recognition_receive.xml" value="0.3078125" />
         <entry key="..\:/Android/QuanLyPhuongTien/app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="..\:/Android/QuanLyPhuongTien/app/src/main/res/layout/activity_protector.xml" value="0.33" />
         <entry key="..\:/Android/QuanLyPhuongTien/app/src/main/res/layout/activity_scan.xml" value="0.36666666666666664" />

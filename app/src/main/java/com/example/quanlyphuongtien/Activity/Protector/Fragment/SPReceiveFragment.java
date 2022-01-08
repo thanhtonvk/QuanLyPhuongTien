@@ -1,5 +1,6 @@
 package com.example.quanlyphuongtien.Activity.Protector.Fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.quanlyphuongtien.Activity.Protector.Adapter.ListSendAdapter;
+import com.example.quanlyphuongtien.Activity.Protector.FaceRecognitionReceiveActivity;
 import com.example.quanlyphuongtien.Database.TicketDBContext;
 import com.example.quanlyphuongtien.Entities.Ticket;
 import com.example.quanlyphuongtien.R;
@@ -51,7 +53,7 @@ public class SPReceiveFragment extends Fragment {
     TicketDBContext dbContext;
     TextView tv_idhs;
     List<Ticket> search = new ArrayList<>();
-    Button btn_confirm;
+    Button btn_confirm, btn_face;
 
     private void initView(View view) {
         edt_search = view.findViewById(R.id.edt_search);
@@ -60,6 +62,7 @@ public class SPReceiveFragment extends Fragment {
         dbContext = new TicketDBContext(getContext());
         tv_idhs = view.findViewById(R.id.tv_idhs);
         btn_confirm = view.findViewById(R.id.btn_confirm);
+        btn_face = view.findViewById(R.id.btn_face);
     }
 
 
@@ -68,6 +71,12 @@ public class SPReceiveFragment extends Fragment {
     private void onClick() {
 
 
+        btn_face.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getContext(), FaceRecognitionReceiveActivity.class));
+            }
+        });
         btn_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

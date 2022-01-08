@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.quanlyphuongtien.Activity.Admin.AdminActivity;
+import com.example.quanlyphuongtien.Activity.Protector.FaceRecognitionActivity;
 import com.example.quanlyphuongtien.Activity.Protector.ProtectorActivity;
 import com.example.quanlyphuongtien.Activity.Student.StudentActivity;
 import com.example.quanlyphuongtien.Activity.Teacher.TeacherActivity;
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         initView();
         db = new SQLiteHelper(MainActivity.this);
         Remember remember = db.GetRemember();
@@ -161,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
             });
         }
         if (rd_teacher.isChecked()) {
-            TeacherDBContext dbContext = new TeacherDBContext(MainActivity.this);
+            TeacherDBContext dbContext = new TeacherDBContext(getApplicationContext());
             dbContext.reference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
