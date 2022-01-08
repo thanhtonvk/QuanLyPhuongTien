@@ -1,7 +1,9 @@
 package com.example.quanlyphuongtien.Entities;
 
 public class Student {
-    private String id, password, name, className, dateOfBirth,numberPlate,vehicleCategory;
+    private String id, password, name, className, dateOfBirth, numberPlate, vehicleCategory;
+
+
 
     public String getId() {
         return id;
@@ -58,7 +60,6 @@ public class Student {
     public void setVehicleCategory(String vehicleCategory) {
         this.vehicleCategory = vehicleCategory;
     }
-
     public Student(String id, String password, String name, String className, String dateOfBirth, String numberPlate, String vehicleCategory) {
         this.id = id;
         this.password = password;
@@ -68,7 +69,8 @@ public class Student {
         this.numberPlate = numberPlate;
         this.vehicleCategory = vehicleCategory;
     }
-    public Student(){
+
+    public Student() {
 
     }
 }

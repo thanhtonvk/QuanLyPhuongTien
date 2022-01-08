@@ -1,5 +1,6 @@
 package com.example.quanlyphuongtien;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,9 +15,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.example.quanlyphuongtien.Activity.Admin.AdminActivity;
-import com.example.quanlyphuongtien.Activity.Protector.FaceRecognitionActivity;
 import com.example.quanlyphuongtien.Activity.Protector.ProtectorActivity;
 import com.example.quanlyphuongtien.Activity.Student.StudentActivity;
 import com.example.quanlyphuongtien.Activity.Teacher.TeacherActivity;
@@ -52,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.LOCATION_HARDWARE, Manifest.permission.ACCESS_COARSE_LOCATION}, 123);
         initView();
         db = new SQLiteHelper(MainActivity.this);
         Remember remember = db.GetRemember();
@@ -93,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void loadRemember(Remember remember) {
-        if(remember!=null){
+        if (remember != null) {
             edt_username.setText(remember.getUsername());
             edt_password.setText(remember.getPassword());
             if (remember.getCheck() == 0) {

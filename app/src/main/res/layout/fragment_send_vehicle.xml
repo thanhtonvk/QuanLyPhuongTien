@@ -70,21 +70,41 @@
             android:textStyle="bold" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/tv_qr"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="10dp"
-        android:text="Quét mã QR"
-        android:textSize="20sp" />
-
-    <ImageView
-        android:id="@+id/btn_scan"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
+    <RelativeLayout
+        android:layout_width="320dp"
+        android:layout_height="360dp"
         android:layout_gravity="center"
-        android:src="@drawable/ic_qr" />
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <com.example.quanlyphuongtien.Activity.Protector.Camera.CameraSourcePreview
+            android:id="@+id/preview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:visibility="gone">
+
+            <com.example.quanlyphuongtien.Activity.Protector.Camera.GraphicOverlay
+                android:id="@+id/faceOverlay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:foregroundGravity="center" />
+        </com.example.quanlyphuongtien.Activity.Protector.Camera.CameraSourcePreview>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btn_capture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/ic_capture" />
+
+        <ImageView
+            android:id="@+id/img"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_student" />
+    </RelativeLayout>
 
     <CheckBox
         android:id="@+id/cb_other"
@@ -176,13 +196,30 @@
             android:textColor="@color/white" />
 
         <Button
-            android:id="@+id/btn_rescan"
+            android:id="@+id/btn_chuplai"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@drawable/border_textview"
             android:backgroundTint="#FB8C00"
-            android:text="Quét lại"
+            android:text="Quét khuôn mặt"
             android:textColor="@color/white" />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_qr"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:text="Quét mã QR"
+        android:textSize="20sp" />
+
+    <ImageView
+        android:id="@+id/btn_scan"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_qr" />
 </LinearLayout>

@@ -21,9 +21,15 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.SparseArray;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -85,6 +91,11 @@ public class FaceRecognitionActivity extends AppCompatActivity {
     private static final int RC_HANDLE_CAMERA_PERM = 2;
     int check = 0;
 
+    CheckBox cb_othervehicle;
+    Spinner sp_vehicle;
+    EditText edt_plate;
+    LinearLayout layout_other;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,6 +104,7 @@ public class FaceRecognitionActivity extends AppCompatActivity {
         onClick();
         dbContext = new StudentDBContext(FaceRecognitionActivity.this);
         loadDatabase();
+        loadInfo();
         int rc = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
         if (rc == PackageManager.PERMISSION_GRANTED) {
             createCameraSource();
@@ -100,6 +112,12 @@ public class FaceRecognitionActivity extends AppCompatActivity {
             requestCameraPermission();
         }
 
+    }
+
+    private void loadInfo() {
+        String[] vehicles = new String[]{"Xe máy", "Xe điện", "Xe đạp"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(FaceRecognitionActivity.this, android.R.layout.simple_spinner_dropdown_item, vehicles);
+        sp_vehicle.setAdapter(adapter);
     }
 
     private List<String> GetLabels() {
@@ -134,6 +152,22 @@ public class FaceRecognitionActivity extends AppCompatActivity {
     int DIM_PIXEL_SIZE = 3;
 
     private void onClick() {
+
+        cb_othervehicle.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (cb_othervehicle.isChecked()) {
+                    cb_othervehicle.setChecked(false);
+                    layout_other.setVisibility(View.VISIBLE);
+                } else {
+                    cb_othervehicle.setChecked(true);
+                    layout_other.setVisibility(View.GONE);
+                }
+
+                return false;
+            }
+        });
+
         Random random = new Random();
         btn_open.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -159,7 +193,14 @@ public class FaceRecognitionActivity extends AppCompatActivity {
                     ticket.setSendDate(formatter.format(date));
                     ticket.setIdhs(student.getId());
                     if (student.getVehicleCategory() == null || student.getNumberPlate() == null) {
-                        Toast.makeText(FaceRecognitionActivity.this, "Chưa đăng ký biển số", Toast.LENGTH_LONG).show();
+                        if (edt_plate.getText().toString().equals("")) {
+                            Toast.makeText(FaceRecognitionActivity.this, "Phải nhập biển số", Toast.LENGTH_LONG).show();
+                        } else {
+                            ticket.setVehicle(sp_vehicle.getSelectedItem().toString());
+                            ticket.setPlate(edt_plate.getText().toString());
+                            db.addTicket(ticket);
+                            finish();
+                        }
                     } else {
                         ticket.setVehicle(student.getVehicleCategory());
                         ticket.setPlate(student.getNumberPlate());
@@ -338,6 +379,10 @@ public class FaceRecognitionActivity extends AppCompatActivity {
         mPreview = findViewById(R.id.preview);
         mGraphicOverlay = findViewById(R.id.faceOverlay);
         btn_capture = findViewById(R.id.btn_capture);
+        sp_vehicle = findViewById(R.id.sp_vehicle);
+        edt_plate = findViewById(R.id.edt_plate);
+        layout_other = findViewById(R.id.layout_other);
+        cb_othervehicle = findViewById(R.id.cb_other);
     }
 
     private int getMax(float[] arr) {

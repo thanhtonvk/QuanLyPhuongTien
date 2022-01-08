@@ -87,25 +87,106 @@
         android:paddingRight="20dp"
         android:textSize="20sp" />
 
-    <Button
-        android:id="@+id/btn_open"
-        android:layout_width="300dp"
+    <CheckBox
+        android:id="@+id/cb_other"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/border_textview"
-        android:backgroundTint="#039BE5"
-        android:gravity="center"
-        android:text="Mở thư viện"
-        android:textColor="@color/white" />
+        android:layout_marginLeft="20dp"
+        android:text="Lựa chọn phương tiện khác" />
 
-    <Button
-        android:id="@+id/btn_confirm"
-        android:layout_width="300dp"
+    <LinearLayout
+        android:id="@+id/layout_other"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/border_textview"
-        android:backgroundTint="#FFB300"
-        android:text="Xác nhận"
-        android:textColor="@color/white" />
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Loại xe"
+                android:textColor="#039BE5"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Biển số"
+                android:textColor="#039BE5"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="5dp">
+
+            <Spinner
+                android:id="@+id/sp_vehicle"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:background="@drawable/border_textview"
+                android:paddingLeft="20dp"
+                android:text="Biển số: "
+                android:textColor="#039BE5"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/edt_plate"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:background="@drawable/border_textview"
+                android:paddingLeft="20dp"
+                android:textColor="#039BE5"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/btn_open"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_weight="1"
+            android:background="@drawable/border_textview"
+            android:backgroundTint="#039BE5"
+            android:gravity="center"
+            android:text="Mở thư viện"
+            android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/btn_confirm"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="20dp"
+            android:layout_weight="1"
+            android:background="@drawable/border_textview"
+            android:backgroundTint="#FFB300"
+            android:text="Xác nhận"
+            android:textColor="@color/white" />
+    </LinearLayout>
 
 
 </LinearLayout>

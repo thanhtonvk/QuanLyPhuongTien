@@ -1,21 +1,44 @@
 package com.example.quanlyphuongtien.Activity.Student;
 
+import android.Manifest;
+import android.app.ProgressDialog;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.quanlyphuongtien.Activity.Student.Adapter.StudentFragmentAdapter;
+import com.example.quanlyphuongtien.Entities.Common;
 import com.example.quanlyphuongtien.R;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class StudentActivity extends AppCompatActivity {
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+
+public class StudentActivity extends AppCompatActivity implements LocationListener {
 
     BottomNavigationView bottomNav;
     ViewPager viewPager;
+    LocationManager locationManager;
+    LocationListener locationListener;
+    private FusedLocationProviderClient locationProviderClient;
+    private Geocoder geocoder;
+    private List<Address> addresses;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,11 +46,40 @@ public class StudentActivity extends AppCompatActivity {
         setContentView(R.layout.activity_student);
         initView();
         setViewPager();
+        getCurrentLocation();
+    }
+
+    private void getCurrentLocation() {
+        geocoder = new Geocoder(StudentActivity.this, Locale.getDefault());
+        ProgressDialog dialog = new ProgressDialog(StudentActivity.this);
+        dialog.setTitle("Đang lấy vị trí hiện tại, vui lòng chờ");
+        dialog.show();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+        }
+        locationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                if (location != null) {
+                    dialog.dismiss();
+                    Common.lStudent = new com.example.quanlyphuongtien.Entities.Location(location.getLatitude(), location.getLongitude());
+                    try {
+                        addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                        Toast.makeText(StudentActivity.this, "Bạn đang ở " + addresses.get(0).getAddressLine(0), Toast.LENGTH_LONG).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+        });
+
     }
 
     private void initView() {
         bottomNav = findViewById(R.id.nav_bottom);
         viewPager = findViewById(R.id.viewpager_student);
+        locationProviderClient = LocationServices.getFusedLocationProviderClient(this);
     }
 
     //set view pager
@@ -77,5 +129,30 @@ public class StudentActivity extends AppCompatActivity {
                 return true;
             }
         });
+    }
+
+    @Override
+    public void onLocationChanged(@NonNull Location location) {
+        Common.lStudent = new com.example.quanlyphuongtien.Entities.Location(location.getLatitude(), location.getLongitude());
+    }
+
+    @Override
+    public void onFlushComplete(int requestCode) {
+
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(@NonNull String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(@NonNull String provider) {
+
     }
 }
