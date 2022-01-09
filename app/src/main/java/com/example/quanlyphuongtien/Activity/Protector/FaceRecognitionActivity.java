@@ -298,30 +298,34 @@ public class FaceRecognitionActivity extends AppCompatActivity {
             canvas.drawRoundRect(rectF, cornerRadius, cornerRadius, rectPaint);
         }
         faceDetector.release();
-        Bitmap result = Bitmap.createBitmap(bitmap, (int) left, (int) top, (int) right - (int) left, (int) bottom - (int) top);
-        img.setImageDrawable(new BitmapDrawable(getResources(), result));
-        return result;
+        if (left < 0 || top < 0 || bottom > bitmap.getHeight() || right > bitmap.getWidth() || bitmap.getWidth() <= 0 || bitmap.getHeight() <= 0) {
+            img.setImageDrawable(new BitmapDrawable(getResources(), bitmap));
+            return bitmap;
+        } else {
+            if (right - left <= 0 || bottom - top <= 0) {
+                img.setImageDrawable(new BitmapDrawable(getResources(), bitmap));
+                return bitmap;
+            } else {
+                Bitmap result = Bitmap.createBitmap(bitmap, (int) left, (int) top, (int) right - (int) left, (int) bottom - (int) top);
+                img.setImageDrawable(new BitmapDrawable(getResources(), result));
+                return result;
+            }
+        }
     }
 
     private static final float IMAGE_MEAN = 127.5f;
     private static final float IMAGE_STD = 127.5f;
 
     private ByteBuffer comvertBitmapToByteBuffer(Bitmap bitmap) {
-
         bitmap = Bitmap.createScaledBitmap(bitmap, 224, 224, false);
-
-
         ByteBuffer byteBuffer = ByteBuffer.allocateDirect(4 * 224 * 224 * 3);
         byteBuffer.order(ByteOrder.nativeOrder());
         int[] intValues = new int[224 * 224];
-
-
         bitmap.getPixels(intValues, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
         int pixel = 0;
         for (int i = 0; i < 224; i++) {
             for (int j = 0; j < 224; j++) {
                 int input = intValues[pixel++];
-
                 byteBuffer.putFloat((((input >> 16 & 0xFF) - IMAGE_MEAN) / IMAGE_STD));
                 byteBuffer.putFloat((((input >> 8 & 0xFF) - IMAGE_MEAN) / IMAGE_STD));
                 byteBuffer.putFloat((((input & 0xFF) - IMAGE_MEAN) / IMAGE_STD));
@@ -329,7 +333,6 @@ public class FaceRecognitionActivity extends AppCompatActivity {
         }
         return byteBuffer;
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

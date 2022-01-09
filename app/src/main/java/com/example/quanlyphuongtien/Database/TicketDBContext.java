@@ -54,17 +54,17 @@ public class TicketDBContext {
         });
         if (kt) {
             Toast.makeText(context, "Xe đã được gửi rồi", Toast.LENGTH_SHORT).show();
-            dialog.dismiss();
+            dialog.cancel();
         } else {
             reference.child(ticket.getId()).setValue(ticket).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if (task.isSuccessful()) {
                         Toast.makeText(context, "Thành công", Toast.LENGTH_SHORT).show();
-                        dialog.dismiss();
+                        dialog.cancel();
                     } else {
                         Toast.makeText(context, "Lỗi, kiểm tra lại", Toast.LENGTH_SHORT).show();
-                        dialog.dismiss();
+                        dialog.cancel();
                     }
                 }
             });

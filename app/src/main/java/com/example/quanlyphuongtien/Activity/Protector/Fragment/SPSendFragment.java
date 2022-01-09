@@ -127,8 +127,11 @@ public class SPSendFragment extends Fragment {
                         }
                     }
                 }
-                adapter = new ListStudentAdapter(getContext(), search);
-                lv_student.setAdapter(adapter);
+                if(getContext()!=null){
+                    adapter = new ListStudentAdapter(getContext(), search);
+                    lv_student.setAdapter(adapter);
+                }
+
 
             }
         });
@@ -193,8 +196,11 @@ public class SPSendFragment extends Fragment {
                     Student student = dataSnapshot.getValue(Student.class);
                     studentList.add(student);
                 }
-                adapter = new ListStudentAdapter(getContext(), studentList);
-                lv_student.setAdapter(adapter);
+                if(getContext()!=null){
+                    adapter = new ListStudentAdapter(getContext(), studentList);
+                    lv_student.setAdapter(adapter);
+                }
+
             }
 
             @Override

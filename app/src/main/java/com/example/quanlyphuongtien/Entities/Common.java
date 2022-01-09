@@ -11,7 +11,9 @@ public class Common {
     //    21.04236977747165, 106.76520954232869
     public static int checkLocation() {
         double AVERAGE_RADIUS_OF_EARTH_KM = 6371;
+        //20.933357755309384, 106.00828157523416
         Location lSchool = new Location(21.04236977747165, 106.76520954232869);
+
         double latDistance = Math.toRadians(lStudent.getLat() - lSchool.getLat());
         double lngDistance = Math.toRadians(lStudent.getLng() - lSchool.getLng());
         double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)

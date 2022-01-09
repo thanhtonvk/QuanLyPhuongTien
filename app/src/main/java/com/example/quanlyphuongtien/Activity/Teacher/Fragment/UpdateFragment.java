@@ -100,14 +100,17 @@ public class UpdateFragment extends Fragment {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()
                 ) {
                     Student student = dataSnapshot.getValue(Student.class);
-                    if(student.getClassName().equals(teacher.getHeadTeacher())){
+                    if (student.getClassName().equals(teacher.getHeadTeacher())) {
                         studentList.add(student);
                     }
 
                 }
-                listAdapter = new StudentListAdapter(getContext(), studentList);
-                lv_student.setAdapter(listAdapter);
-                edt_search.setAdapter(listAdapter);
+                if (getContext() != null) {
+                    listAdapter = new StudentListAdapter(getContext(), studentList);
+                    lv_student.setAdapter(listAdapter);
+                    edt_search.setAdapter(listAdapter);
+                }
+
                 tv_count.setText("Tổng số: " + studentList.size() + " học sinh");
             }
 
@@ -303,7 +306,7 @@ public class UpdateFragment extends Fragment {
                 tv_dateofbirth.setText(String.format("%s/%s/%s", i2, i1 + 1, i));
             }
         };
-        DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),  android.R.style.Theme_Holo_Dialog_NoActionBar,dateSetListener, selectedYear, selectedMonth, selectedDay);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), android.R.style.Theme_Holo_Dialog_NoActionBar, dateSetListener, selectedYear, selectedMonth, selectedDay);
         datePickerDialog.show();
     }
 }

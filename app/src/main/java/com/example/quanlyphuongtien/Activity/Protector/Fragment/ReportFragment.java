@@ -1,6 +1,9 @@
 package com.example.quanlyphuongtien.Activity.Protector.Fragment;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +13,7 @@ import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
 import com.example.quanlyphuongtien.Activity.Protector.Adapter.ListReportAdapter;
@@ -20,6 +24,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,6 +59,7 @@ public class ReportFragment extends Fragment {
         lv_report = view.findViewById(R.id.lv_ticket);
         dbContext = new TicketDBContext(getContext());
         search = new ArrayList<>();
+        btn_report = view.findViewById(R.id.btn_report);
 
     }
 
@@ -71,16 +79,74 @@ public class ReportFragment extends Fragment {
                             search.add(ticket);
                     }
                 }
-                adapter = new ListReportAdapter(getContext(), search);
-                lv_report.setAdapter(adapter);
+                if (getContext() != null) {
+                    adapter = new ListReportAdapter(getContext(), search);
+                    lv_report.setAdapter(adapter);
+                }
+
+
+            }
+        });
+        btn_report.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (edt_search.getText().toString().equals("")) {
+                    WriteFile(ticketList);
+                } else {
+                    for (Ticket ticket : ticketList
+                    ) {
+
+                        if (ticket.getReceveDate() != null) {
+                            if (ticket.getReceveDate().contains(edt_search.getText().toString()))
+                                search.add(ticket);
+                        }
+                    }
+                    WriteFile(search);
+                }
+                sendFile();
 
             }
         });
     }
 
+    public void sendFile() {
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
+        File link = getContext().getExternalCacheDir();
+        File file = new File(link, "guixe.csv");
+        if (file.exists()) {
+            Uri path = FileProvider.getUriForFile(getContext(), getContext().getApplicationContext().getPackageName() + ".provider", file);
+            if (path != null) {
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("application/csv");
+                intent.putExtra(Intent.EXTRA_STREAM, path);
+                intent.putExtra(Intent.EXTRA_SUBJECT, "Subject");
+                startActivity(Intent.createChooser(intent, "Send email..."));
+            }
+
+        }
+    }
+
+    public void WriteFile(List<Ticket> ticketList) {
+        File path = getContext().getExternalCacheDir();
+        File file = new File(path, "guixe.csv");
+        try {
+            FileWriter fileWriter = new FileWriter(file);
+            fileWriter.write("Mã học sinh,Họ và tên,Biển số,Giờ gửi,Giờ nhận\n");
+            for (Ticket ticket : ticketList) {
+                String text = ticket.getIdhs() + "," + ticket.getName() + "," + ticket.getPlate() + "," + ticket.getSendDate() + "," + ticket.getReceveDate() + "\n";
+                fileWriter.write(text);
+            }
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     List<Ticket> ticketList;
     ListReportAdapter adapter;
     List<Ticket> search;
+    Button btn_report;
 
     private void loadList() {
         dbContext.reference.addValueEventListener(new ValueEventListener() {

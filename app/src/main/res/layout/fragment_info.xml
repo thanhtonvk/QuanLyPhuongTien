@@ -43,7 +43,7 @@
         android:gravity="center_vertical"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
-        android:text="Chức vụ: Giảng viên"
+        android:text="Chức vụ: Giáo viên chủ nhiệm"
         android:textColor="@color/black" />
 
     <TextView
@@ -76,7 +76,6 @@
         android:textColor="@color/black" />
 
     <Button
-        android:textAllCaps="false"
         android:id="@+id/btn_update"
         android:layout_width="match_parent"
         android:layout_height="40dp"
@@ -87,10 +86,10 @@
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
         android:text="Cập nhật thông tin"
+        android:textAllCaps="false"
         android:textColor="@color/black" />
 
     <Button
-        android:textAllCaps="false"
         android:id="@+id/btn_logout"
         android:layout_width="match_parent"
         android:layout_height="40dp"
@@ -102,5 +101,6 @@
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
         android:text="Đăng xuất"
+        android:textAllCaps="false"
         android:textColor="@color/black" />
 </LinearLayout>

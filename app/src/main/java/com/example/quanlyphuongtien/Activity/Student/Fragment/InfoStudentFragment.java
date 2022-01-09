@@ -1,5 +1,6 @@
 package com.example.quanlyphuongtien.Activity.Student.Fragment;
 
+import static com.example.quanlyphuongtien.Activity.Teacher.Fragment.UpdateFragment.studentList;
 import static com.example.quanlyphuongtien.Entities.Common.student;
 
 import android.app.DatePickerDialog;
@@ -25,6 +26,11 @@ import com.example.quanlyphuongtien.Entities.Common;
 import com.example.quanlyphuongtien.Entities.Student;
 import com.example.quanlyphuongtien.MainActivity;
 import com.example.quanlyphuongtien.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 public class InfoStudentFragment extends Fragment {
 
@@ -42,6 +48,7 @@ public class InfoStudentFragment extends Fragment {
         initView(view);
         loadInfo();
         onClick();
+        loadDataStudent();
         if (student.getVehicleCategory() == null || student.getNumberPlate() == null) {
             setUpdateStudentDialog();
         }
@@ -134,12 +141,25 @@ public class InfoStudentFragment extends Fragment {
             public void onClick(View view) {
                 if (!edt_name.getText().toString().equals("") && !tv_dateofbirth.getText().toString().equals("") && !edt_password.getText().toString().equals("")
                         && !edt_vehicle.getText().toString().equals("") && !edt_numberplate.getText().toString().equals("")) {
-                    student.setName(edt_name.getText().toString());
-                    student.setDateOfBirth(tv_dateofbirth.getText().toString());
-                    student.setNumberPlate(edt_numberplate.getText().toString());
-                    student.setVehicleCategory(edt_vehicle.getText().toString());
-                    db.updateStudent(student);
-                    dialog.dismiss();
+                    if (checkPlate(edt_numberplate.getText().toString().trim())) {
+                        student.setName(edt_name.getText().toString());
+                        student.setDateOfBirth(tv_dateofbirth.getText().toString());
+                        student.setNumberPlate(edt_numberplate.getText().toString());
+                        student.setVehicleCategory(edt_vehicle.getText().toString());
+                        try {
+                            db.updateStudent(student);
+                            dialog.dismiss();
+                        } catch (Exception ex) {
+
+                        }
+
+                    } else {
+                        if (edt_numberplate.getText().toString().equals("")) {
+                            tv_noti_plate.setText("Biển số đã tồn tại");
+                            tv_noti_plate.setTextColor(Color.RED);
+                        }
+                    }
+
                 } else {
                     if (edt_name.getText().toString().equals("")) {
                         tv_noti_name.setText("Tên không được để trống");
@@ -195,6 +215,15 @@ public class InfoStudentFragment extends Fragment {
         datePickerDialog.show();
     }
 
+    private boolean checkPlate(String plate) {
+        boolean check = true;
+        for (Student student : studentList
+        ) {
+            if (student.getNumberPlate().equals(plate)) check = false;
+        }
+        return check;
+    }
+
     //set dialog changes password
     private void changePassword() {
         Dialog dialog = new Dialog(getContext());
@@ -219,6 +248,7 @@ public class InfoStudentFragment extends Fragment {
                         } else {
                             student.setPassword(edt_old.getText().toString());
                             db.updateStudent(student);
+                            dialog.dismiss();
                         }
                     }
                 } else {
@@ -227,5 +257,25 @@ public class InfoStudentFragment extends Fragment {
             }
         });
 
+    }
+
+    //load list student from firebase
+    private void loadDataStudent() {
+        db.reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                studentList = new ArrayList<>();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()
+                ) {
+                    Student student = dataSnapshot.getValue(Student.class);
+                    studentList.add(student);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }

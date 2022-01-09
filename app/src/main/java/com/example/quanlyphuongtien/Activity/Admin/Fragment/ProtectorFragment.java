@@ -88,10 +88,11 @@ public class ProtectorFragment extends Fragment {
                     Protector protector = dataSnapshot.getValue(Protector.class);
                     protectorList.add(protector);
                 }
-                adapter = new ProtectorListAdapter(getContext(), protectorList);
-                lv_protector.setAdapter(adapter);
-                edt_search.setAdapter(adapter);
-
+                if(getContext()!=null){
+                    adapter = new ProtectorListAdapter(getContext(), protectorList);
+                    lv_protector.setAdapter(adapter);
+                    edt_search.setAdapter(adapter);
+                }
 
             }
 

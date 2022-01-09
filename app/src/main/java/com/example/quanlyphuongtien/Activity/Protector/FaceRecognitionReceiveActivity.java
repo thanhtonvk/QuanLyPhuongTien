@@ -375,9 +375,14 @@ public class FaceRecognitionReceiveActivity extends AppCompatActivity {
             canvas.drawRoundRect(rectF, cornerRadius, cornerRadius, rectPaint);
         }
         faceDetector.release();
-        Bitmap result = Bitmap.createBitmap(bitmap, (int) left, (int) top, (int) right - (int) left, (int) bottom - (int) top);
-        img.setImageDrawable(new BitmapDrawable(getResources(), result));
-        return result;
+        if (left < 0 || top < 0 || bottom > bitmap.getHeight() || right > bitmap.getWidth()||bitmap.getWidth()<=0||bitmap.getHeight()<=0) {
+            img.setImageDrawable(new BitmapDrawable(getResources(), bitmap));
+            return bitmap;
+        } else {
+            Bitmap result = Bitmap.createBitmap(bitmap, (int) left, (int) top, (int) right - (int) left, (int) bottom - (int) top);
+            img.setImageDrawable(new BitmapDrawable(getResources(), result));
+            return result;
+        }
     }
 
     List<Ticket> ticketList;

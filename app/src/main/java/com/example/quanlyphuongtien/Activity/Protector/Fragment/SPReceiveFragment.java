@@ -139,8 +139,11 @@ public class SPReceiveFragment extends Fragment {
                     }
 
                 }
-                adapter = new ListSendAdapter(getContext(), ticketList);
-                lv_ticket.setAdapter(adapter);
+                if (getContext() != null) {
+                    adapter = new ListSendAdapter(getContext(), ticketList);
+                    lv_ticket.setAdapter(adapter);
+                }
+
             }
 
             @Override

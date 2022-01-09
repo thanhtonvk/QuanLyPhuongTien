@@ -171,7 +171,7 @@ public class ConfirmFragment extends Fragment {
             sp_month.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    setDate(month[i], tv_Money);
+                    setDate(month[i], tv_Money, tv_startDate, tv_endDate);
                 }
 
                 @Override
@@ -217,15 +217,24 @@ public class ConfirmFragment extends Fragment {
         DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-                tv_date.setText(String.format("%s/%s/%s", i2, i1 + 1, i));
+                tv_date.setText(String.format("%s-%s-%s", i2, i1 + 1, i));
             }
         };
         DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), dateSetListener, selectedYear, selectedMonth, selectedDay);
         datePickerDialog.show();
     }
 
-    private void setDate(String month, TextView tv_money) {
+    private void setDate(String month, TextView tv_money, TextView tv_start, TextView tv_end) {
         tv_money.setText("" + (Integer.parseInt(month) * 15000));
+        String start = tv_start.getText().toString();
+        String[] arr = start.split("-");
+        if (Integer.parseInt(arr[1].trim()) + Integer.parseInt(month) <= 12) {
+            tv_end.setText(arr[0] + "-" + (Integer.parseInt(arr[1].trim()) + Integer.parseInt(month)) + "-" + arr[2]);
+        } else {
+            int m = Integer.parseInt(arr[1]) + Integer.parseInt(month) - 12;
+            tv_end.setText(arr[0] + "-" + m + "-" + (Integer.parseInt(arr[2]) + 1));
+        }
+
     }
 
     private Student getStudent(String ID) {

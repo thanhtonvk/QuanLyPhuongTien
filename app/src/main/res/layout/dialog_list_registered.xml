@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="450dp"
     android:maxHeight="450dp"
     android:orientation="vertical">
-
     <!-- TODO: Update blank fragment layout -->
     <TextView
         android:id="@+id/tv_message"
@@ -16,8 +15,10 @@
         android:textStyle="bold" />
 
     <LinearLayout
+        android:id="@+id/layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/tv_message"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:orientation="horizontal">
@@ -78,6 +79,20 @@
         android:id="@+id/lv_student"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@id/btn_report"
+        android:layout_below="@id/layout"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp" />
-</LinearLayout>
+
+    <Button
+        android:id="@+id/btn_report"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/border_textview"
+        android:backgroundTint="#FDD835"
+        android:text="Gửi báo cáo"
+        android:textColor="@color/white" />
+</RelativeLayout>
