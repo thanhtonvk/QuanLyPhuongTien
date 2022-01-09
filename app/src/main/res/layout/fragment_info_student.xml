@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    android:orientation="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".Activity.Student.Fragment.InfoStudentFragment">
 
     <TextView
@@ -62,7 +61,22 @@
         android:textColor="@color/black" />
 
     <Button
+        android:id="@+id/btn_location"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/border_textview"
+        android:drawableRight="@drawable/ic_location"
+        android:gravity="center_vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:text="Cập nhật vị trí hiện tại"
         android:textAllCaps="false"
+        android:textColor="@color/black" />
+
+    <Button
         android:id="@+id/btn_update"
         android:layout_width="match_parent"
         android:layout_height="40dp"
@@ -73,10 +87,10 @@
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
         android:text="Cập nhật thông tin"
+        android:textAllCaps="false"
         android:textColor="@color/black" />
 
     <Button
-        android:textAllCaps="false"
         android:id="@+id/btn_logout"
         android:layout_width="match_parent"
         android:layout_height="40dp"
@@ -88,6 +102,7 @@
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
         android:text="Đăng xuất"
+        android:textAllCaps="false"
         android:textColor="@color/black" />
 
 </LinearLayout>

@@ -3,11 +3,19 @@ package com.example.quanlyphuongtien.Activity.Student.Fragment;
 import static com.example.quanlyphuongtien.Activity.Teacher.Fragment.UpdateFragment.studentList;
 import static com.example.quanlyphuongtien.Entities.Common.student;
 
+import android.Manifest;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -16,9 +24,11 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.quanlyphuongtien.Database.StudentDBContext;
@@ -52,10 +62,12 @@ public class InfoStudentFragment extends Fragment {
         if (student.getVehicleCategory() == null || student.getNumberPlate() == null) {
             setUpdateStudentDialog();
         }
+        ActivityCompat.requestPermissions(getActivity(),
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
     }
 
     TextView tv_name, tv_dateofbirth, tv_idgv, tv_classname;
-    Button btn_update, btn_logout;
+    Button btn_update, btn_logout, btn_getlocation;
     StudentDBContext db;
 
     private void initView(View view) {
@@ -66,6 +78,7 @@ public class InfoStudentFragment extends Fragment {
         btn_logout = view.findViewById(R.id.btn_logout);
         tv_classname = view.findViewById(R.id.tv_classname);
         db = new StudentDBContext(getContext());
+        btn_getlocation = view.findViewById(R.id.btn_location);
     }
 
     private void loadInfo() {
@@ -76,6 +89,8 @@ public class InfoStudentFragment extends Fragment {
             tv_classname.setText("Lớp: " + student.getClassName());
         }
     }
+
+    LocationManager locationManager;
 
     private void onClick() {
         btn_update.setOnClickListener(new View.OnClickListener() {
@@ -92,6 +107,18 @@ public class InfoStudentFragment extends Fragment {
                 startActivity(new Intent(getContext(), MainActivity.class));
             }
         });
+        btn_getlocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
+                if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    OnGPS();
+                } else {
+                    getLocation();
+                }
+            }
+        });
+
     }
 
     //set dialog when click info student
@@ -277,5 +304,44 @@ public class InfoStudentFragment extends Fragment {
 
             }
         });
+    }
+
+    private void OnGPS() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage("Enable GPS").setCancelable(false).setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+            }
+        }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private static final int REQUEST_LOCATION = 1;
+
+    private void getLocation() {
+        Toast.makeText(getContext(), "Đang lấy vị trí, vui lòng chờ", Toast.LENGTH_LONG).show();
+        if (ActivityCompat.checkSelfPermission(
+                getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
+        } else {
+            Location locationGPS = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (locationGPS != null) {
+                double lat = locationGPS.getLatitude();
+                double longi = locationGPS.getLongitude();
+                Common.lStudent = new com.example.quanlyphuongtien.Entities.Location(lat, longi);
+                Toast.makeText(getContext(), "Lấy vị trí thành công", Toast.LENGTH_LONG).show();
+
+            } else {
+                Toast.makeText(getContext(), "Không thể tìm vị trí của bạn", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }

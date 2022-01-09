@@ -1,7 +1,6 @@
 package com.example.quanlyphuongtien.Activity.Student;
 
 import android.Manifest;
-import android.app.ProgressDialog;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -51,9 +50,6 @@ public class StudentActivity extends AppCompatActivity implements LocationListen
 
     private void getCurrentLocation() {
         geocoder = new Geocoder(StudentActivity.this, Locale.getDefault());
-        ProgressDialog dialog = new ProgressDialog(StudentActivity.this);
-        dialog.setTitle("Đang lấy vị trí hiện tại, vui lòng chờ");
-        dialog.show();
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
         }
@@ -61,9 +57,9 @@ public class StudentActivity extends AppCompatActivity implements LocationListen
             @Override
             public void onSuccess(Location location) {
                 if (location != null) {
-                    dialog.dismiss();
                     Common.lStudent = new com.example.quanlyphuongtien.Entities.Location(location.getLatitude(), location.getLongitude());
                     try {
+                        Common.lStudent = new com.example.quanlyphuongtien.Entities.Location(location.getLatitude(), location.getLongitude());
                         addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
                         Toast.makeText(StudentActivity.this, "Bạn đang ở " + addresses.get(0).getAddressLine(0), Toast.LENGTH_LONG).show();
                     } catch (IOException e) {

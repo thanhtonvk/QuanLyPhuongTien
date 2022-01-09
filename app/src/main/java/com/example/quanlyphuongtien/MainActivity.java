@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()
                     ) {
                         Student student = dataSnapshot.getValue(Student.class);
-                        if (student.getId().equals(edt_username.getText().toString()) && student.getPassword().equals(edt_password.getText().toString())) {
+                        if (student.getId().trim().equalsIgnoreCase(edt_username.getText().toString().trim()) && student.getPassword().trim().equalsIgnoreCase(edt_password.getText().toString().trim())) {
                             Common.student = student;
                         }
                     }
@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()
                     ) {
                         Teacher teacher = dataSnapshot.getValue(Teacher.class);
-                        if (teacher.getUsername().equals(user) && teacher.getPassword().equals(pass)) {
+                        if (teacher.getUsername().trim().equalsIgnoreCase(user.trim()) && teacher.getPassword().trim().equalsIgnoreCase(pass.trim())) {
                             Common.teacher = teacher;
                         }
                     }
@@ -202,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()
                     ) {
                         Admin admin = dataSnapshot.getValue(Admin.class);
-                        if (admin.getId().equals(edt_username.getText().toString()) && admin.getPassword().equals(edt_password.getText().toString())) {
+                        if (admin.getId().trim().equalsIgnoreCase(edt_username.getText().toString().trim()) && admin.getPassword().trim().equalsIgnoreCase(edt_password.getText().toString().trim())) {
                             check = true;
                         }
                     }
@@ -229,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()
                     ) {
                         Protector protector = dataSnapshot.getValue(Protector.class);
-                        if (protector.getUsername().equals(edt_username.getText().toString()) && protector.getPassword().equals(edt_password.getText().toString())) {
+                        if (protector.getUsername().trim().equalsIgnoreCase(edt_username.getText().toString().trim()) && protector.getPassword().trim().equalsIgnoreCase(edt_password.getText().toString().trim())) {
                             Common.protector = protector;
                         }
                     }
