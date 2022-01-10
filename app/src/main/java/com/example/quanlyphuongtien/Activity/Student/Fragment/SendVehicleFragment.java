@@ -47,7 +47,15 @@ import com.example.quanlyphuongtien.Database.TicketDBContext;
 import com.example.quanlyphuongtien.Entities.Common;
 import com.example.quanlyphuongtien.Entities.Ticket;
 import com.example.quanlyphuongtien.R;
-import com.example.quanlyphuongtien.ml.Model;
+import com.example.quanlyphuongtien.ml.Model10a1;
+import com.example.quanlyphuongtien.ml.Model10a2;
+import com.example.quanlyphuongtien.ml.Model10a81;
+import com.example.quanlyphuongtien.ml.Model10a82;
+import com.example.quanlyphuongtien.ml.Model10a83;
+import com.example.quanlyphuongtien.ml.Model10a84;
+import com.example.quanlyphuongtien.ml.Model11a51;
+import com.example.quanlyphuongtien.ml.Model11a52;
+import com.example.quanlyphuongtien.ml.Model11a53;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.vision.CameraSource;
@@ -100,6 +108,15 @@ public class SendVehicleFragment extends Fragment {
     int check = 0;
     boolean checkIDHS = false;
     int flag = 0;
+    Model10a1 model10a1;
+    Model10a2 model10a2;
+    Model10a81 model10a81;
+    Model10a82 model10a82;
+    Model10a83 model10a83;
+    Model10a84 model10a84;
+    Model11a51 model11a51;
+    Model11a52 model11a52;
+    Model11a53 model11a53;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -111,15 +128,34 @@ public class SendVehicleFragment extends Fragment {
         if (rc == PackageManager.PERMISSION_GRANTED) {
             createCameraSource();
         }
+        initialize();
 
     }
 
-    private List<String> GetLabels() {
+    //Khởi tạo model
+    private void initialize() {
+        try {
+            model10a1 = Model10a1.newInstance(getContext());
+            model10a2 = Model10a2.newInstance(getContext());
+            model10a81 = Model10a81.newInstance(getContext());
+            model10a82 = Model10a82.newInstance(getContext());
+            model10a83 = Model10a83.newInstance(getContext());
+            model10a84 = Model10a84.newInstance(getContext());
+            model11a51 = Model11a51.newInstance(getContext());
+            model11a52 = Model11a52.newInstance(getContext());
+            model11a53 = Model11a53.newInstance(getContext());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private List<String> GetLabels(String fileName) {
         List<String> labels = new ArrayList<>();
         BufferedReader reader = null;
         try {
             reader = new BufferedReader(
-                    new InputStreamReader(getContext().getAssets().open("label.txt")));
+                    new InputStreamReader(getContext().getAssets().open(fileName+".txt")));
 
             // do reading, usually loop until end of file reading
             String mLine;
@@ -221,6 +257,216 @@ public class SendVehicleFragment extends Fragment {
         return byteBuffer;
     }
 
+    private void predict(Bitmap bitmap, Dialog dialog) {
+        initialize();
+        TensorBuffer inputFeature0 = TensorBuffer.createFixedSize(new int[]{1, 224, 224, 3}, DataType.FLOAT32);
+        // Creates inputs for reference.
+        ByteBuffer bytebuff = comvertBitmapToByteBuffer(detectFace(bitmap));
+        inputFeature0.loadBuffer(bytebuff);
+        if (student.getClassName().equalsIgnoreCase("10A1")) {
+
+
+            // Runs model inference and gets result.
+            Model10a1.Outputs outputs = model10a1.process(inputFeature0);
+            TensorBuffer outputFeature0 = outputs.getOutputFeature0AsTensorBuffer();
+            for (int i = 0; i < outputFeature0.getFloatArray().length; i++) {
+                Log.e("acc", GetLabels("labels_10A1").get(i) + ":" + outputFeature0.getFloatArray()[i]);
+            }
+            int max = getMax(outputFeature0.getFloatArray(),"labels_10A1");
+            if (student.getId().equals(GetLabels("labels_10A1").get(max))) {
+                checkIDHS = true;
+                Common.idStudent = GetLabels("labels_10A1").get(max);
+                dialog.dismiss();
+
+            } else {
+                checkIDHS = false;
+                dialog.dismiss();
+                Toast.makeText(getContext(), "Khuôn mặt không khớp, quét lại", Toast.LENGTH_LONG).show();
+            }
+
+
+            // Releases model resources if no longer used.
+            model10a1.close();
+        }
+        if (student.getClassName().equalsIgnoreCase("10A2")) {
+
+
+            // Runs model inference and gets result.
+            Model10a2.Outputs outputs = model10a2.process(inputFeature0);
+            TensorBuffer outputFeature0 = outputs.getOutputFeature0AsTensorBuffer();
+            for (int i = 0; i < outputFeature0.getFloatArray().length; i++) {
+                Log.e("acc", GetLabels("labels_10A2").get(i) + ":" + outputFeature0.getFloatArray()[i]);
+            }
+            int max = getMax(outputFeature0.getFloatArray(),"labels_10A2");
+            if (student.getId().equals(GetLabels("labels_10A2").get(max))) {
+                checkIDHS = true;
+                Common.idStudent = GetLabels("labels_10A2").get(max);
+                dialog.dismiss();
+
+            } else {
+                checkIDHS = false;
+                dialog.dismiss();
+                Toast.makeText(getContext(), "Khuôn mặt không khớp, quét lại", Toast.LENGTH_LONG).show();
+            }
+            // Releases model resources if no longer used.
+            model10a2.close();
+        }
+        if (student.getClassName().equalsIgnoreCase("10A8")) {
+            int endID = Integer.parseInt(student.getId().split("")[6] + student.getId().split("")[7]);
+            if (endID <= 11) {
+                // Runs model inference and gets result.
+                Model10a81.Outputs outputs = model10a81.process(inputFeature0);
+                TensorBuffer outputFeature0 = outputs.getOutputFeature0AsTensorBuffer();
+                for (int i = 0; i < outputFeature0.getFloatArray().length; i++) {
+                    Log.e("acc", GetLabels("labels_10A8_1").get(i) + ":" + outputFeature0.getFloatArray()[i]);
+                }
+                int max = getMax(outputFeature0.getFloatArray(),"labels_10A8_1");
+                if (student.getId().equals(GetLabels("labels_10A8_1").get(max))) {
+                    checkIDHS = true;
+                    Common.idStudent = GetLabels("labels_10A8_1").get(max);
+                    dialog.dismiss();
+
+                } else {
+                    checkIDHS = false;
+                    dialog.dismiss();
+                    Toast.makeText(getContext(), "Khuôn mặt không khớp, quét lại", Toast.LENGTH_LONG).show();
+                }
+                // Releases model resources if no longer used.
+                model10a81.close();
+            }
+            if (endID > 11 && endID <= 22) {
+                // Runs model inference and gets result.
+                Model10a82.Outputs outputs = model10a82.process(inputFeature0);
+                TensorBuffer outputFeature0 = outputs.getOutputFeature0AsTensorBuffer();
+                for (int i = 0; i < outputFeature0.getFloatArray().length; i++) {
+                    Log.e("acc", GetLabels("labels_10A8_2").get(i) + ":" + outputFeature0.getFloatArray()[i]);
+                }
+                int max = getMax(outputFeature0.getFloatArray(),"labels_10A8_2");
+                if (student.getId().equals(GetLabels("labels_10A8_2").get(max))) {
+                    checkIDHS = true;
+                    Common.idStudent = GetLabels("labels_10A8_2").get(max);
+                    dialog.dismiss();
+
+                } else {
+                    checkIDHS = false;
+                    dialog.dismiss();
+                    Toast.makeText(getContext(), "Khuôn mặt không khớp, quét lại", Toast.LENGTH_LONG).show();
+                }
+                // Releases model resources if no longer used.
+                model10a82.close();
+            }
+            if (endID > 22 && endID <= 33) {
+                // Runs model inference and gets result.
+                Model10a83.Outputs outputs = model10a83.process(inputFeature0);
+                TensorBuffer outputFeature0 = outputs.getOutputFeature0AsTensorBuffer();
+                for (int i = 0; i < outputFeature0.getFloatArray().length; i++) {
+                    Log.e("acc", GetLabels("labels_10A8_3").get(i) + ":" + outputFeature0.getFloatArray()[i]);
+                }
+                int max = getMax(outputFeature0.getFloatArray(),"labels_10A8_3");
+                if (student.getId().equals(GetLabels("labels_10A8_3").get(max))) {
+                    checkIDHS = true;
+                    Common.idStudent = GetLabels("labels_10A8_3").get(max);
+                    dialog.dismiss();
+
+                } else {
+                    checkIDHS = false;
+                    dialog.dismiss();
+                    Toast.makeText(getContext(), "Khuôn mặt không khớp, quét lại", Toast.LENGTH_LONG).show();
+                }
+                // Releases model resources if no longer used.
+                model10a83.close();
+            }
+            if (endID > 33 && endID <= 45) {
+                // Runs model inference and gets result.
+                Model10a84.Outputs outputs = model10a84.process(inputFeature0);
+                TensorBuffer outputFeature0 = outputs.getOutputFeature0AsTensorBuffer();
+                for (int i = 0; i < outputFeature0.getFloatArray().length; i++) {
+                    Log.e("acc", GetLabels("labels_10A8_4").get(i) + ":" + outputFeature0.getFloatArray()[i]);
+                }
+                int max = getMax(outputFeature0.getFloatArray(),"labels_10A8_4");
+                if (student.getId().equals(GetLabels("labels_10A8_4").get(max))) {
+                    checkIDHS = true;
+                    Common.idStudent = GetLabels("labels_10A8_4").get(max);
+                    dialog.dismiss();
+
+                } else {
+                    checkIDHS = false;
+                    dialog.dismiss();
+                    Toast.makeText(getContext(), "Khuôn mặt không khớp, quét lại", Toast.LENGTH_LONG).show();
+                }
+                // Releases model resources if no longer used.
+                model10a84.close();
+            }
+        }
+        if (student.getClassName().equalsIgnoreCase("11A5")) {
+            int endID = Integer.parseInt(student.getId().split("")[6] + student.getId().split("")[7]);
+            if (endID <= 10) {
+                // Runs model inference and gets result.
+                Model11a51.Outputs outputs = model11a51.process(inputFeature0);
+                TensorBuffer outputFeature0 = outputs.getOutputFeature0AsTensorBuffer();
+                for (int i = 0; i < outputFeature0.getFloatArray().length; i++) {
+                    Log.e("acc", GetLabels("labels_11A5_1").get(i) + ":" + outputFeature0.getFloatArray()[i]);
+                }
+                int max = getMax(outputFeature0.getFloatArray(),"labels_11A5_1");
+                if (student.getId().equals(GetLabels("labels_11A5_1").get(max))) {
+                    checkIDHS = true;
+                    Common.idStudent = GetLabels("labels_11A5_1").get(max);
+                    dialog.dismiss();
+
+                } else {
+                    checkIDHS = false;
+                    dialog.dismiss();
+                    Toast.makeText(getContext(), "Khuôn mặt không khớp, quét lại", Toast.LENGTH_LONG).show();
+                }
+                // Releases model resources if no longer used.
+                model11a51.close();
+            }
+            if (endID > 10 && endID <= 20) {
+                // Runs model inference and gets result.
+                Model11a52.Outputs outputs = model11a52.process(inputFeature0);
+                TensorBuffer outputFeature0 = outputs.getOutputFeature0AsTensorBuffer();
+                for (int i = 0; i < outputFeature0.getFloatArray().length; i++) {
+                    Log.e("acc", GetLabels("labels_11A5_2").get(i) + ":" + outputFeature0.getFloatArray()[i]);
+                }
+                int max = getMax(outputFeature0.getFloatArray(),"labels_11A5_2");
+                if (student.getId().equals(GetLabels("labels_11A5_2").get(max))) {
+                    checkIDHS = true;
+                    Common.idStudent = GetLabels("labels_11A5_2").get(max);
+                    dialog.dismiss();
+
+                } else {
+                    checkIDHS = false;
+                    dialog.dismiss();
+                    Toast.makeText(getContext(), "Khuôn mặt không khớp, quét lại", Toast.LENGTH_LONG).show();
+                }
+                // Releases model resources if no longer used.
+                model11a52.close();
+            }
+            if (endID > 20 && endID <= 30) {
+                // Runs model inference and gets result.
+                Model11a53.Outputs outputs = model11a53.process(inputFeature0);
+                TensorBuffer outputFeature0 = outputs.getOutputFeature0AsTensorBuffer();
+                for (int i = 0; i < outputFeature0.getFloatArray().length; i++) {
+                    Log.e("acc", GetLabels("labels_11A5_3").get(i) + ":" + outputFeature0.getFloatArray()[i]);
+                }
+                int max = getMax(outputFeature0.getFloatArray(),"labels_11A5_3");
+                if (student.getId().equals(GetLabels("labels_11A5_3").get(max))) {
+                    checkIDHS = true;
+                    Common.idStudent = GetLabels("labels_11A5_3").get(max);
+                    dialog.dismiss();
+
+                } else {
+                    checkIDHS = false;
+                    dialog.dismiss();
+                    Toast.makeText(getContext(), "Khuôn mặt không khớp, quét lại", Toast.LENGTH_LONG).show();
+                }
+                // Releases model resources if no longer used.
+                model11a53.close();
+            }
+        }
+
+    }
+
     private void onClick() {
         btn_scan.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -279,39 +525,7 @@ public class SendVehicleFragment extends Fragment {
                             img.setVisibility(View.VISIBLE);
                             mPreview.setVisibility(View.GONE);
                             img.setImageBitmap(bitmap);
-                            try {
-                                Model model = Model.newInstance(getContext());
-
-                                // Creates inputs for reference.
-                                TensorBuffer inputFeature0 = TensorBuffer.createFixedSize(new int[]{1, 224, 224, 3}, DataType.FLOAT32);
-
-                                ByteBuffer bytebuff = comvertBitmapToByteBuffer(detectFace(bitmap));
-                                inputFeature0.loadBuffer(bytebuff);
-
-                                // Runs model inference and gets result.
-                                Model.Outputs outputs = model.process(inputFeature0);
-                                TensorBuffer outputFeature0 = outputs.getOutputFeature0AsTensorBuffer();
-                                for (int i = 0; i < outputFeature0.getFloatArray().length; i++) {
-                                    Log.e("acc", GetLabels().get(i) + ":" + outputFeature0.getFloatArray()[i]);
-                                }
-                                int max = getMax(outputFeature0.getFloatArray());
-                                if (student.getId().equals(GetLabels().get(max))) {
-                                    checkIDHS = true;
-                                    Common.idStudent = GetLabels().get(max);
-                                    dialog.dismiss();
-
-                                } else {
-                                    checkIDHS = false;
-                                    dialog.dismiss();
-                                    Toast.makeText(getContext(), "Khuôn mặt không khớp, quét lại", Toast.LENGTH_LONG).show();
-                                }
-
-
-                                // Releases model resources if no longer used.
-                                model.close();
-                            } catch (IOException e) {
-                                // TODO Handle the exception
-                            }
+                            predict(bitmap, dialog);
                         }
                     });
                 } else {
@@ -426,10 +640,10 @@ public class SendVehicleFragment extends Fragment {
         sp_vehicle.setAdapter(adapter);
     }
 
-    private int getMax(float[] arr) {
+    private int getMax(float[] arr,String fileName) {
         int index = 0;
         float min = 0.0f;
-        for (int i = 0; i < 14; i++) {
+        for (int i = 0; i < GetLabels(fileName).size(); i++) {
             if (arr[i] > min) {
                 index = i;
                 min = arr[i];

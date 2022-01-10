@@ -246,7 +246,10 @@ public class InfoStudentFragment extends Fragment {
         boolean check = true;
         for (Student student : studentList
         ) {
-            if (student.getNumberPlate().equals(plate)) check = false;
+            if (student.getNumberPlate() != null) {
+                if (student.getNumberPlate().equals(plate)) check = false;
+            }
+
         }
         return check;
     }

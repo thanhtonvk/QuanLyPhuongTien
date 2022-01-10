@@ -211,7 +211,6 @@ public class FaceRecognitionActivity extends AppCompatActivity {
 
             }
         });
-
         btn_capture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
