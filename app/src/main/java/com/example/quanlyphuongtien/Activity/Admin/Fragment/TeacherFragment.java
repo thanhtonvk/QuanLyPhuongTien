@@ -78,6 +78,7 @@ public class TeacherFragment extends Fragment {
         });
     }
 
+    //lấy về danh sách giáo viên trên csdl
     private void loadListTeacher() {
         db.reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -128,12 +129,7 @@ public class TeacherFragment extends Fragment {
         btn_update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int yearNow = 0, monthNow = 0, dayNow = 0;
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                    yearNow = java.time.LocalDate.now().getYear();
-                    monthNow = java.time.LocalDate.now().getMonthValue();
-                    dayNow = java.time.LocalDate.now().getDayOfMonth();
-                }
+
                 Teacher teacher = new Teacher();
                 if (!edt_name.getText().toString().equals("") && !tv_dateofbirth.getText().toString().equals("")) {
                     teacher.setUsername("GV" + ((teacherList.size() + 1000) + 1));
@@ -141,7 +137,6 @@ public class TeacherFragment extends Fragment {
                     teacher.setDateOfBirth(tv_dateofbirth.getText().toString());
                     teacher.setHeadTeacher(edt_classname.getText().toString());
                     teacher.setPassword(teacher.getUsername());
-                    //set fee
                     db.updateTeacher(teacher);
                     dialog.dismiss();
                 } else {

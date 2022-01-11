@@ -11,7 +11,7 @@
     <item
         android:id="@+id/menu_confirm_teacher"
         android:icon="@drawable/ic_confirm"
-        android:title="Xác  hận nộp phí" />
+        android:title="Xác nhận nộp phí" />
     <item
         android:id="@+id/menu_add_teacher"
         android:icon="@drawable/ic_add"

@@ -28,7 +28,7 @@
         <entry key="..\:/Android/QuanLyPhuongTien/app/src/main/res/layout/dialog_list_registered.xml" value="0.33" />
         <entry key="..\:/Android/QuanLyPhuongTien/app/src/main/res/layout/dialog_update_protector.xml" value="0.36666666666666664" />
         <entry key="..\:/Android/QuanLyPhuongTien/app/src/main/res/layout/dialog_update_student.xml" value="0.36666666666666664" />
-        <entry key="..\:/Android/QuanLyPhuongTien/app/src/main/res/layout/dialog_update_teacher.xml" value="0.20520833333333333" />
+        <entry key="..\:/Android/QuanLyPhuongTien/app/src/main/res/layout/dialog_update_teacher.xml" value="0.33" />
         <entry key="..\:/Android/QuanLyPhuongTien/app/src/main/res/layout/fragment_confirm.xml" value="0.33" />
         <entry key="..\:/Android/QuanLyPhuongTien/app/src/main/res/layout/fragment_genaral.xml" value="0.5" />
         <entry key="..\:/Android/QuanLyPhuongTien/app/src/main/res/layout/fragment_info.xml" value="0.33" />
@@ -48,7 +48,7 @@
         <entry key="..\:/Android/QuanLyPhuongTien/app/src/main/res/layout/item_sp_student.xml" value="0.36666666666666664" />
         <entry key="..\:/Android/QuanLyPhuongTien/app/src/main/res/layout/item_sp_ticket.xml" value="0.36666666666666664" />
         <entry key="..\:/Android/QuanLyPhuongTien/app/src/main/res/layout/item_student.xml" value="0.25" />
-        <entry key="..\:/Android/QuanLyPhuongTien/app/src/main/res/layout/item_teacher.xml" value="0.36666666666666664" />
+        <entry key="..\:/Android/QuanLyPhuongTien/app/src/main/res/layout/item_teacher.xml" value="0.1" />
         <entry key="..\:/Android/QuanLyPhuongTien/app/src/main/res/menu/menu_admin.xml" value="0.20520833333333333" />
         <entry key="..\:/Android/QuanLyPhuongTien/app/src/main/res/menu/menu_protector.xml" value="0.20520833333333333" />
         <entry key="..\:/Android/QuanLyPhuongTien/app/src/main/res/menu/menu_student.xml" value="0.36666666666666664" />

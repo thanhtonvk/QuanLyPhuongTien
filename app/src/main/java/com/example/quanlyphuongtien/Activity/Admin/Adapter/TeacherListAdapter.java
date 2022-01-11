@@ -39,7 +39,9 @@ public class TeacherListAdapter extends ArrayAdapter<Teacher> {
         TextView tv_username = convertView.findViewById(R.id.tv_username);
         TextView tv_name = convertView.findViewById(R.id.tv_name);
         TextView tv_headclass = convertView.findViewById(R.id.tv_headclass);
+
         Teacher Teacher = TeacherList.get(position);
+
         tv_stt.setText((position + 1) + "");
         tv_name.setText(Teacher.getName());
         tv_username.setText(Teacher.getUsername());

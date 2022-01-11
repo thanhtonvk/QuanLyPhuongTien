@@ -118,4 +118,14 @@
         android:backgroundTint="#039BE5"
         android:text="Đăng nhập"
         android:textColor="@color/white" />
+
+    <TextView
+        android:layout_marginTop="150dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Phần mềm dự án tham gia cuộc thi KHKT 2021"
+        android:textColor="#1E88E5"
+        android:textSize="18sp"
+        android:textStyle="italic" />
 </LinearLayout>

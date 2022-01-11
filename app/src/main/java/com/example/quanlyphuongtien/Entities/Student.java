@@ -3,8 +3,6 @@ package com.example.quanlyphuongtien.Entities;
 public class Student {
     private String id, password, name, className, dateOfBirth, numberPlate, vehicleCategory;
 
-
-
     public String getId() {
         return id;
     }

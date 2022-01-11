@@ -89,7 +89,6 @@ public class InfoFragment extends Fragment {
         Dialog dialog = new Dialog(getContext());
         dialog.setContentView(R.layout.dialog_update_teacher);
         dialog.show();
-        TextView tv_noti_password = dialog.findViewById(R.id.tv_noti_password);
         TextView tv_noti_name = dialog.findViewById(R.id.tv_noti_name);
         TextView tv_noti_date = dialog.findViewById(R.id.tv_noti_dateofbirth);
         TextView tv_id = dialog.findViewById(R.id.tv_id);
@@ -189,7 +188,7 @@ public class InfoFragment extends Fragment {
                         if (!edt_rep.getText().toString().equals(edt_new.getText().toString())) {
                             tv_rep.setText("Mật khẩu không khớp");
                         } else {
-                            teacher.setPassword(edt_old.getText().toString());
+                            teacher.setPassword(edt_new.getText().toString());
                             db.updateTeacher(teacher);
                         }
                     }
