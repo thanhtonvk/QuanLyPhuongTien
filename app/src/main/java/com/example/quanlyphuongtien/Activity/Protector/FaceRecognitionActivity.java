@@ -390,7 +390,7 @@ public class FaceRecognitionActivity extends AppCompatActivity {
     private int getMax(float[] arr) {
         int index = 0;
         float min = 0.0f;
-        for (int i = 0; i < 14; i++) {
+        for (int i = 0; i < 100; i++) {
             if (arr[i] > min) {
                 index = i;
                 min = arr[i];

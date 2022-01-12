@@ -7,12 +7,11 @@ public class Common {
     public static String contentQR;
     public static String idStudent;
     public static Location lStudent;
-
-    //    21.04236977747165, 106.76520954232869
+    
     public static double checkLocation() {
         double AVERAGE_RADIUS_OF_EARTH_KM = 6371;
-        //20.933357755309384, 106.00828157523416
-        Location lSchool = new Location(20.932640, 106.008752);
+
+        Location lSchool = new Location(21.042449884531383, 106.76533828835657);
 
         double latDistance = Math.toRadians(lStudent.getLat() - lSchool.getLat());
         double lngDistance = Math.toRadians(lStudent.getLng() - lSchool.getLng());
