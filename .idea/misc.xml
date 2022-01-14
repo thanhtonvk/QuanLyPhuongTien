@@ -26,9 +26,11 @@
         <entry key="..\:/Android/QuanLyPhuongTien/app/src/main/res/layout/dialog_info_protector.xml" value="0.36666666666666664" />
         <entry key="..\:/Android/QuanLyPhuongTien/app/src/main/res/layout/dialog_info_student.xml" value="0.36666666666666664" />
         <entry key="..\:/Android/QuanLyPhuongTien/app/src/main/res/layout/dialog_list_registered.xml" value="0.33" />
+        <entry key="..\:/Android/QuanLyPhuongTien/app/src/main/res/layout/dialog_showmonth.xml" value="0.25" />
         <entry key="..\:/Android/QuanLyPhuongTien/app/src/main/res/layout/dialog_update_protector.xml" value="0.36666666666666664" />
         <entry key="..\:/Android/QuanLyPhuongTien/app/src/main/res/layout/dialog_update_student.xml" value="0.36666666666666664" />
         <entry key="..\:/Android/QuanLyPhuongTien/app/src/main/res/layout/dialog_update_teacher.xml" value="0.33" />
+        <entry key="..\:/Android/QuanLyPhuongTien/app/src/main/res/layout/dialog_warning.xml" value="0.33" />
         <entry key="..\:/Android/QuanLyPhuongTien/app/src/main/res/layout/fragment_confirm.xml" value="0.33" />
         <entry key="..\:/Android/QuanLyPhuongTien/app/src/main/res/layout/fragment_genaral.xml" value="0.5" />
         <entry key="..\:/Android/QuanLyPhuongTien/app/src/main/res/layout/fragment_info.xml" value="0.33" />

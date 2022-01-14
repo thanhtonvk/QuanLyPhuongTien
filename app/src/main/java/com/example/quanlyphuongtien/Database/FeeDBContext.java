@@ -16,11 +16,13 @@ public class FeeDBContext {
     public FirebaseDatabase database;
     public DatabaseReference reference;
     Context context;
+    public DatabaseReference other;
 
     public FeeDBContext(Context context) {
         this.context = context;
         database = FirebaseDatabase.getInstance();
         reference = database.getReference("Fee");
+        other = database.getReference("Money");
     }
 
     public void updateFee(Fee fee) {

@@ -10,13 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -32,6 +30,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,6 +53,7 @@ public class ConfirmFragment extends Fragment {
     List<Fee> feeList;
     TextView tv_sum;
     TextView tv_nameteacher;
+    int feeMoney = 0;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -112,14 +113,27 @@ public class ConfirmFragment extends Fragment {
 
             }
         });
+        db.other.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    String str = dataSnapshot.getValue(String.class);
+                    if (str != null && !str.equals("")) {
+                        feeMoney = Integer.parseInt(str);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
-    ArrayAdapter<String> sp_adapter;
 
     //set dialog info
     private void setDialogFeeInfo(int postion) {
-        String month[] = new String[]{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"};
-        sp_adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, month);
         Fee fee = feeList.get(postion);
         Student student = getStudent(fee.getIdSV());
         Dialog dialog = new Dialog(getContext());
@@ -127,7 +141,7 @@ public class ConfirmFragment extends Fragment {
         dialog.show();
         TextView tv_id, tv_name, tv_vehicle, tv_startDate, tv_endDate;
         EditText tv_Money;
-        Spinner sp_month = dialog.findViewById(R.id.sp_month);
+        EditText sp_month = dialog.findViewById(R.id.sp_month);
         tv_id = dialog.findViewById(R.id.tv_id);
         tv_name = dialog.findViewById(R.id.tv_name);
         tv_vehicle = dialog.findViewById(R.id.tv_vehicle);
@@ -136,7 +150,7 @@ public class ConfirmFragment extends Fragment {
         tv_Money = dialog.findViewById(R.id.tv_money);
         Button btn_confirm = dialog.findViewById(R.id.btn_update);
         Button btn_delete = dialog.findViewById(R.id.btn_delete);
-
+        EditText edt_fee = dialog.findViewById(R.id.edt_fee);
         btn_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -144,41 +158,22 @@ public class ConfirmFragment extends Fragment {
                 dialog.dismiss();
             }
         });
-        sp_month.setAdapter(sp_adapter);
         if (fee.isConfirm()) {
+            sp_month.setVisibility(View.GONE);
             btn_confirm.setVisibility(View.GONE);
+            edt_fee.setText(feeMoney + "");
             tv_id.setText(fee.getIdSV());
             tv_name.setText(fee.getName());
             tv_vehicle.setText(student.getVehicleCategory());
             tv_startDate.setText(fee.getStartDate());
             tv_endDate.setText(fee.getEndDate());
             tv_Money.setText(fee.getMoney() + "");
-            sp_month.setEnabled(false);
-            if (fee.getMoney() / 15000 == 1) {
-                sp_month.setTop(0);
-            } else if (fee.getMoney() / 15000 == 3) {
-                sp_month.setTop(1);
-            } else if (fee.getMoney() / 15000 == 6) {
-                sp_month.setTop(2);
-            } else {
-                sp_month.setTop(3);
-            }
         } else {
+            edt_fee.setText(feeMoney + "");
             tv_id.setText(fee.getIdSV());
             tv_name.setText(fee.getName());
             tv_vehicle.setText(student.getVehicleCategory());
             tv_startDate.setText(fee.getStartDate());
-            sp_month.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    setDate(month[i], tv_Money, tv_startDate, tv_endDate);
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> adapterView) {
-
-                }
-            });
             tv_startDate.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -188,16 +183,20 @@ public class ConfirmFragment extends Fragment {
             tv_endDate.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    setDialogDatePicker(tv_endDate);
+                    setDialogDatePickerEnd(sp_month, tv_Money, tv_startDate, tv_endDate, edt_fee);
+
                 }
             });
             btn_confirm.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    db.other.child("1").setValue(edt_fee.getText().toString());
                     fee.setMoney(Integer.parseInt(tv_Money.getText().toString()));
+                    fee.setStartDate(tv_startDate.getText().toString());
                     fee.setEndDate(tv_endDate.getText().toString());
                     fee.setConfirm(true);
                     db.updateFee(fee);
+                    dialog.dismiss();
                 }
             });
         }
@@ -224,15 +223,45 @@ public class ConfirmFragment extends Fragment {
         datePickerDialog.show();
     }
 
-    private void setDate(String month, TextView tv_money, TextView tv_start, TextView tv_end) {
-        tv_money.setText("" + (Integer.parseInt(month) * 15000));
+    //set datepicker dialog
+    private void setDialogDatePickerEnd(EditText sp_month, TextView tv_money, TextView tv_start, TextView tv_date, TextView edt_fee) {
+        int selectedYear = 0;
+        int selectedMonth = 0;
+        int selectedDay = 0;
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            selectedYear = java.time.LocalDate.now().getYear();
+            selectedMonth = java.time.LocalDate.now().getMonthValue();
+            selectedDay = java.time.LocalDate.now().getDayOfMonth();
+        }
+        DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                tv_date.setText(String.format("%s-%s-%s", i2, i1 + 1, i));
+                setDate(sp_month, tv_money, tv_start, tv_date, edt_fee);
+            }
+        };
+        DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), dateSetListener, selectedYear, selectedMonth, selectedDay);
+        datePickerDialog.show();
+    }
+
+    private void setDate(EditText sp_month, TextView tv_money, TextView tv_start, TextView tv_end, TextView edt_fee) {
         String start = tv_start.getText().toString();
-        String[] arr = start.split("-");
-        if (Integer.parseInt(arr[1].trim()) + Integer.parseInt(month) <= 12) {
-            tv_end.setText(arr[0] + "-" + (Integer.parseInt(arr[1].trim()) + Integer.parseInt(month)) + "-" + arr[2]);
-        } else {
-            int m = Integer.parseInt(arr[1]) + Integer.parseInt(month) - 12;
-            tv_end.setText(arr[0] + "-" + m + "-" + (Integer.parseInt(arr[2]) + 1));
+        String end = tv_end.getText().toString();
+        String[] arrStart = start.split("-");
+        String[] arrEnd = end.split("-");
+        int startYear = Integer.parseInt(arrStart[2]);
+        int endYear = Integer.parseInt(arrEnd[2]);
+        int startMonth = Integer.parseInt(arrStart[1]);
+        int endMonth = Integer.parseInt(arrEnd[1]);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            LocalDate startDate = LocalDate.of(startYear, startMonth, 1);
+            LocalDate endDate = LocalDate.of(endYear, endMonth, 1);
+            Period period = Period.between(startDate, endDate);
+            int numOfMonth = (period.getYears() * 12) + period.getMonths();
+            sp_month.setText(numOfMonth + "");
+            int fee = Integer.parseInt(edt_fee.getText().toString());
+            tv_money.setText((numOfMonth * fee) + "");
         }
 
     }

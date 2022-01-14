@@ -7,7 +7,7 @@ public class Common {
     public static String contentQR;
     public static String idStudent;
     public static Location lStudent;
-    
+
     public static double checkLocation() {
         double AVERAGE_RADIUS_OF_EARTH_KM = 6371;
 

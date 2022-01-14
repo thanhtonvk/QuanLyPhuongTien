@@ -5,6 +5,7 @@ import static com.example.quanlyphuongtien.Entities.Common.teacher;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,8 +15,10 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,13 +27,20 @@ import androidx.fragment.app.Fragment;
 import com.example.quanlyphuongtien.Activity.Teacher.Adapter.StudentListAdapter;
 import com.example.quanlyphuongtien.Database.FeeDBContext;
 import com.example.quanlyphuongtien.Database.StudentDBContext;
+import com.example.quanlyphuongtien.Entities.Common;
+import com.example.quanlyphuongtien.Entities.Delete;
 import com.example.quanlyphuongtien.Entities.Fee;
 import com.example.quanlyphuongtien.Entities.Student;
 import com.example.quanlyphuongtien.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -50,6 +60,7 @@ public class UpdateFragment extends Fragment {
         initView(view);
         loadDataStudent();
         onClick();
+        loadListNonPay();
     }
 
     AutoCompleteTextView edt_search;
@@ -71,6 +82,7 @@ public class UpdateFragment extends Fragment {
         db = new StudentDBContext(getContext());
         feeDBContext = new FeeDBContext(getContext());
         tv_count = view.findViewById(R.id.tv_sumstudent);
+
 
     }
 
@@ -193,6 +205,94 @@ public class UpdateFragment extends Fragment {
 
     }
 
+    private Student getStudent(String ID) {
+        Student rs = new Student();
+        for (Student student : studentList
+        ) {
+            if (student.getId().equals(ID)) rs = student;
+        }
+        return rs;
+    }
+
+    //kiểm tra nộp tiền đầy đủ
+    public boolean checkComplete(String startDate, String endDate) {
+        int monthNow = 0, yearNow = 0;
+        int monthSchool = 8, yearSchool = 0;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            monthNow = LocalDate.now().getMonthValue();
+            yearNow = LocalDate.now().getYear();
+        }
+        if (monthSchool > monthNow) {
+            yearSchool = yearNow - 1;
+        } else {
+            yearSchool = yearNow;
+        }
+        String[] start = startDate.split("-");
+        String[] end = endDate.split("-");
+        boolean check = true;
+        if (yearNow == Integer.parseInt(end[2]) && Integer.parseInt(end[1]) < monthNow) {
+            check = false;
+        }
+        if (yearNow > Integer.parseInt(end[2])) {
+            check = false;
+        }
+        if (Integer.parseInt(start[1]) > monthSchool && yearSchool == Integer.parseInt(start[2])) {
+            check = false;
+        }
+        if (Integer.parseInt(start[1]) < monthNow && yearSchool == Integer.parseInt(start[2])) {
+            check = false;
+        }
+        return check;
+
+    }
+
+    List<Fee> feeList;
+
+    public boolean checkFee(String ID) {
+
+        boolean kt = false;
+        for (Fee fee : feeList
+        ) {
+            if (fee.getIdSV().equals(ID)) kt = true;
+        }
+        return kt;
+    }
+
+    public void loadListNonPay() {
+        FeeDBContext feeDBContext = new FeeDBContext(getContext());
+        feeDBContext.reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                feeList = new ArrayList<>();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    Fee fee = dataSnapshot.getValue(Fee.class);
+                    if (fee.isConfirm()) {
+                        if (!checkComplete(fee.getStartDate(), fee.getEndDate())) {
+                            if (getStudent(fee.getIdSV()).getClassName() != null) {
+                                if (getStudent(fee.getIdSV()).getClassName().equals(Common.teacher.getHeadTeacher())) {
+                                    feeList.add(fee);
+                                }
+                            }
+                        }
+                    }
+                    if (!fee.isConfirm()) {
+                        if (getStudent(fee.getIdSV()).getClassName() != null) {
+                            if (getStudent(fee.getIdSV()).getClassName().equals(Common.teacher.getHeadTeacher())) {
+                                feeList.add(fee);
+                            }
+                        }
+
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
 
     //set dialog when click info student
     private void setUpdateStudentDialog(int positon) {
@@ -283,8 +383,52 @@ public class UpdateFragment extends Fragment {
         btn_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                db.deleteStudent(student.getId());
-                dialog.dismiss();
+                if (checkFee(student.getId())) {
+                    dialog.dismiss();
+                    Dialog warning = new Dialog(getContext());
+                    warning.setContentView(R.layout.dialog_warning);
+                    warning.show();
+                    EditText edt_reason = warning.findViewById(R.id.edt_reason);
+                    Button btn_return = warning.findViewById(R.id.btn_return);
+                    Button btn_continue = warning.findViewById(R.id.btn_continue);
+                    Button btn_confirm = warning.findViewById(R.id.btn_confirm);
+                    LinearLayout linearLayout = warning.findViewById(R.id.layout);
+                    linearLayout.setVisibility(View.GONE);
+                    btn_return.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            warning.dismiss();
+                        }
+                    });
+                    btn_continue.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            linearLayout.setVisibility(View.VISIBLE);
+                        }
+                    });
+                    btn_confirm.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (edt_reason.getText().toString().equals("")) {
+                                Toast.makeText(getContext(), "Lý do không được để trống", Toast.LENGTH_SHORT).show();
+                            } else {
+                                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                DatabaseReference reference = database.getReference("DeleteST");
+                                reference.child(student.getId()).setValue(new Delete(student.getId(), student.getName(), edt_reason.getText().toString())).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        db.deleteStudent(student.getId());
+                                        dialog.dismiss();
+                                    }
+                                });
+                            }
+                        }
+                    });
+                } else {
+                    db.deleteStudent(student.getId());
+                    dialog.dismiss();
+                }
+
             }
         });
     }

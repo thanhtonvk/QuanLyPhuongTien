@@ -5,12 +5,15 @@ import static com.example.quanlyphuongtien.Activity.Teacher.Fragment.UpdateFragm
 import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -22,6 +25,7 @@ import androidx.fragment.app.Fragment;
 import com.example.quanlyphuongtien.Activity.Teacher.Adapter.StudentListAdapter;
 import com.example.quanlyphuongtien.Database.FeeDBContext;
 import com.example.quanlyphuongtien.Database.StudentDBContext;
+import com.example.quanlyphuongtien.Entities.Check;
 import com.example.quanlyphuongtien.Entities.Common;
 import com.example.quanlyphuongtien.Entities.Fee;
 import com.example.quanlyphuongtien.Entities.Student;
@@ -33,6 +37,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -147,6 +152,38 @@ public class GeneralFragment extends Fragment {
         }
     }
 
+    //kiểm tra nộp tiền đầy đủ
+    public boolean checkComplete(String startDate, String endDate) {
+        int monthNow = 0, yearNow = 0;
+        int monthSchool = 8, yearSchool = 0;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            monthNow = LocalDate.now().getMonthValue();
+            yearNow = LocalDate.now().getYear();
+        }
+        if (monthSchool > monthNow) {
+            yearSchool = yearNow - 1;
+        } else {
+            yearSchool = yearNow;
+        }
+        String[] start = startDate.split("-");
+        String[] end = endDate.split("-");
+        boolean check = true;
+        if (yearNow == Integer.parseInt(end[2]) && Integer.parseInt(end[1]) < monthNow) {
+            check = false;
+        }
+        if (yearNow > Integer.parseInt(end[2])) {
+            check = false;
+        }
+        if (Integer.parseInt(start[1]) > monthSchool && yearSchool == Integer.parseInt(start[2])) {
+            check = false;
+        }
+        if (Integer.parseInt(start[1]) < monthNow && yearSchool == Integer.parseInt(start[2])) {
+            check = false;
+        }
+        return check;
+
+    }
+
     private void loadListNonPay() {
         FeeDBContext dbContext = new FeeDBContext(getContext());
         Dialog dialog = new Dialog(getContext());
@@ -167,12 +204,24 @@ public class GeneralFragment extends Fragment {
         dbContext.reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                feeList = new ArrayList<>();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     Fee fee = dataSnapshot.getValue(Fee.class);
+                    if (fee.isConfirm()) {
+                        if (!checkComplete(fee.getStartDate(), fee.getEndDate())) {
+                            if (getStudent(fee.getIdSV()).getClassName() != null) {
+                                if (getStudent(fee.getIdSV()).getClassName().equals(Common.teacher.getHeadTeacher())) {
+                                    studentList.add(getStudent(fee.getIdSV()));
+                                    feeList.add(fee);
+                                }
+                            }
+                        }
+                    }
                     if (!fee.isConfirm()) {
                         if (getStudent(fee.getIdSV()).getClassName() != null) {
                             if (getStudent(fee.getIdSV()).getClassName().equals(Common.teacher.getHeadTeacher())) {
                                 studentList.add(getStudent(fee.getIdSV()));
+                                feeList.add(fee);
                             }
                         }
 
@@ -187,6 +236,12 @@ public class GeneralFragment extends Fragment {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
+            }
+        });
+        lv_student.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                setDialogMonth(position);
             }
         });
     }
@@ -214,11 +269,14 @@ public class GeneralFragment extends Fragment {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     Fee fee = dataSnapshot.getValue(Fee.class);
                     if (fee.isConfirm()) {
-                        if (getStudent(fee.getIdSV()).getClassName() != null) {
-                            if (getStudent(fee.getIdSV()).getClassName().equals(Common.teacher.getHeadTeacher())) {
-                                studentList.add(getStudent(fee.getIdSV()));
+                        if (checkComplete(fee.getStartDate(), fee.getEndDate())) {
+                            if (getStudent(fee.getIdSV()).getClassName() != null) {
+                                if (getStudent(fee.getIdSV()).getClassName().equals(Common.teacher.getHeadTeacher())) {
+                                    studentList.add(getStudent(fee.getIdSV()));
+                                }
                             }
                         }
+
                     }
                 }
                 if (getContext() != null) {
@@ -232,6 +290,125 @@ public class GeneralFragment extends Fragment {
 
             }
         });
+    }
+
+    List<Fee> feeList;
+    CheckBox cb1, cb2, cb3, cb4, cb5, cb6, cb7, cb8, cb9, cb10, cb11, cb12;
+
+    private void setDialogMonth(int position) {
+        setCheck();
+        Dialog dialog = new Dialog(getContext());
+        dialog.setContentView(R.layout.dialog_showmonth);
+        dialog.show();
+        cb1 = dialog.findViewById(R.id.cb_1);
+        cb2 = dialog.findViewById(R.id.cb_2);
+        cb3 = dialog.findViewById(R.id.cb_3);
+        cb4 = dialog.findViewById(R.id.cb_4);
+        cb5 = dialog.findViewById(R.id.cb_5);
+        cb6 = dialog.findViewById(R.id.cb_6);
+        cb7 = dialog.findViewById(R.id.cb_7);
+        cb8 = dialog.findViewById(R.id.cb_8);
+        cb9 = dialog.findViewById(R.id.cb_9);
+        cb10 = dialog.findViewById(R.id.cb_10);
+        cb11 = dialog.findViewById(R.id.cb_11);
+        cb12 = dialog.findViewById(R.id.cb_12);
+        Fee fee = feeList.get(position);
+        String startDate = fee.getStartDate();
+        String endDate = fee.getEndDate();
+        if (endDate.equals("")) {
+            cb1.setChecked(false);
+            cb2.setChecked(false);
+            cb3.setChecked(false);
+            cb4.setChecked(false);
+            cb5.setChecked(false);
+            cb6.setChecked(false);
+            cb7.setChecked(false);
+            cb8.setChecked(false);
+            cb9.setChecked(false);
+            cb10.setChecked(false);
+            cb11.setChecked(false);
+            cb12.setChecked(false);
+        } else {
+            int monthNow = 0, yearNow = 0;
+            int monthSchool = 8, yearSchool = 0;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                monthNow = LocalDate.now().getMonthValue();
+                yearNow = LocalDate.now().getYear();
+            }
+            if (monthSchool > monthNow) {
+                yearSchool = yearNow - 1;
+            } else {
+                yearSchool = yearNow;
+            }
+            String[] start = startDate.split("-");
+            String[] end = endDate.split("-");
+            int monthStart = Integer.parseInt(start[1]);
+            int monthEnd = Integer.parseInt(end[1]);
+            if ((monthEnd >= 8 && yearNow == yearSchool) || (monthEnd < 8 && yearNow - 1 == yearSchool)) {
+                if (monthStart < monthEnd) {
+                    for (int i = monthStart - 1; i < monthEnd; i++) {
+                        checkList.get(i).setKt(true);
+                    }
+                } else if (monthStart > monthEnd) {
+                    for (int i = monthStart - 1; i < 12; i++) {
+                        checkList.get(i).setKt(true);
+                    }
+                    for (int i = 0; i < monthEnd; i++) {
+                        checkList.get(i).setKt(true);
+                    }
+                }
+            }
+
+
+            if (checkList.get(0).isKt()) {
+                cb1.setChecked(true);
+            }
+            if (checkList.get(1).isKt()) {
+                cb2.setChecked(true);
+            }
+            if (checkList.get(2).isKt()) {
+                cb3.setChecked(true);
+            }
+            if (checkList.get(3).isKt()) {
+                cb4.setChecked(true);
+            }
+            if (checkList.get(4).isKt()) {
+                cb5.setChecked(true);
+            }
+            if (checkList.get(5).isKt()) {
+                cb6.setChecked(true);
+            }
+            if (checkList.get(6).isKt()) {
+                cb7.setChecked(true);
+            }
+            if (checkList.get(7).isKt()) {
+                cb8.setChecked(true);
+            }
+            if (checkList.get(8).isKt()) {
+                cb9.setChecked(true);
+            }
+            if (checkList.get(9).isKt()) {
+                cb10.setChecked(true);
+            }
+            if (checkList.get(10).isKt()) {
+                cb11.setChecked(true);
+            }
+            if (checkList.get(11).isKt()) {
+                cb12.setChecked(true);
+            }
+
+        }
+
+
+    }
+
+    List<Check> checkList;
+
+    private void setCheck() {
+        checkList = new ArrayList<>();
+        for (int i = 0; i < 12; i++) {
+            checkList.add(new Check(false));
+        }
     }
 
     private Student getStudent(String ID) {
