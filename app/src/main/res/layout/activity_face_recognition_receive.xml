@@ -88,10 +88,35 @@
             <TextView
                 android:id="@+id/tv_name"
                 android:layout_width="300dp"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/border_textview"
                 android:gravity="center"
+                android:minHeight="40dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/tv_plate"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/border_textview"
+                android:gravity="center"
+                android:minHeight="40dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/tv_vehicle"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/border_textview"
+                android:gravity="center"
+                android:minHeight="40dp"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
                 android:textSize="20sp" />

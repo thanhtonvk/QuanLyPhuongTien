@@ -117,6 +117,8 @@ public class SendVehicleFragment extends Fragment {
     Model11a51 model11a51;
     Model11a52 model11a52;
     Model11a53 model11a53;
+    float acc = 0;
+    ImageView btn_reverse;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -155,7 +157,7 @@ public class SendVehicleFragment extends Fragment {
         BufferedReader reader = null;
         try {
             reader = new BufferedReader(
-                    new InputStreamReader(getContext().getAssets().open(fileName+".txt")));
+                    new InputStreamReader(getContext().getAssets().open(fileName + ".txt")));
 
             // do reading, usually loop until end of file reading
             String mLine;
@@ -248,7 +250,6 @@ public class SendVehicleFragment extends Fragment {
         for (int i = 0; i < 224; i++) {
             for (int j = 0; j < 224; j++) {
                 int input = intValues[pixel++];
-
                 byteBuffer.putFloat((((input >> 16 & 0xFF) - IMAGE_MEAN) / IMAGE_STD));
                 byteBuffer.putFloat((((input >> 8 & 0xFF) - IMAGE_MEAN) / IMAGE_STD));
                 byteBuffer.putFloat((((input & 0xFF) - IMAGE_MEAN) / IMAGE_STD));
@@ -256,6 +257,7 @@ public class SendVehicleFragment extends Fragment {
         }
         return byteBuffer;
     }
+
 
     private void predict(Bitmap bitmap, Dialog dialog) {
         initialize();
@@ -272,7 +274,7 @@ public class SendVehicleFragment extends Fragment {
             for (int i = 0; i < outputFeature0.getFloatArray().length; i++) {
                 Log.e("acc", GetLabels("labels_10A1").get(i) + ":" + outputFeature0.getFloatArray()[i]);
             }
-            int max = getMax(outputFeature0.getFloatArray(),"labels_10A1");
+            int max = getMax(outputFeature0.getFloatArray(), "labels_10A1");
             if (student.getId().equals(GetLabels("labels_10A1").get(max))) {
                 checkIDHS = true;
                 Common.idStudent = GetLabels("labels_10A1").get(max);
@@ -297,7 +299,7 @@ public class SendVehicleFragment extends Fragment {
             for (int i = 0; i < outputFeature0.getFloatArray().length; i++) {
                 Log.e("acc", GetLabels("labels_10A2").get(i) + ":" + outputFeature0.getFloatArray()[i]);
             }
-            int max = getMax(outputFeature0.getFloatArray(),"labels_10A2");
+            int max = getMax(outputFeature0.getFloatArray(), "labels_10A2");
             if (student.getId().equals(GetLabels("labels_10A2").get(max))) {
                 checkIDHS = true;
                 Common.idStudent = GetLabels("labels_10A2").get(max);
@@ -320,7 +322,7 @@ public class SendVehicleFragment extends Fragment {
                 for (int i = 0; i < outputFeature0.getFloatArray().length; i++) {
                     Log.e("acc", GetLabels("labels_10A8_1").get(i) + ":" + outputFeature0.getFloatArray()[i]);
                 }
-                int max = getMax(outputFeature0.getFloatArray(),"labels_10A8_1");
+                int max = getMax(outputFeature0.getFloatArray(), "labels_10A8_1");
                 if (student.getId().equals(GetLabels("labels_10A8_1").get(max))) {
                     checkIDHS = true;
                     Common.idStudent = GetLabels("labels_10A8_1").get(max);
@@ -341,7 +343,7 @@ public class SendVehicleFragment extends Fragment {
                 for (int i = 0; i < outputFeature0.getFloatArray().length; i++) {
                     Log.e("acc", GetLabels("labels_10A8_2").get(i) + ":" + outputFeature0.getFloatArray()[i]);
                 }
-                int max = getMax(outputFeature0.getFloatArray(),"labels_10A8_2");
+                int max = getMax(outputFeature0.getFloatArray(), "labels_10A8_2");
                 if (student.getId().equals(GetLabels("labels_10A8_2").get(max))) {
                     checkIDHS = true;
                     Common.idStudent = GetLabels("labels_10A8_2").get(max);
@@ -362,7 +364,7 @@ public class SendVehicleFragment extends Fragment {
                 for (int i = 0; i < outputFeature0.getFloatArray().length; i++) {
                     Log.e("acc", GetLabels("labels_10A8_3").get(i) + ":" + outputFeature0.getFloatArray()[i]);
                 }
-                int max = getMax(outputFeature0.getFloatArray(),"labels_10A8_3");
+                int max = getMax(outputFeature0.getFloatArray(), "labels_10A8_3");
                 if (student.getId().equals(GetLabels("labels_10A8_3").get(max))) {
                     checkIDHS = true;
                     Common.idStudent = GetLabels("labels_10A8_3").get(max);
@@ -383,7 +385,7 @@ public class SendVehicleFragment extends Fragment {
                 for (int i = 0; i < outputFeature0.getFloatArray().length; i++) {
                     Log.e("acc", GetLabels("labels_10A8_4").get(i) + ":" + outputFeature0.getFloatArray()[i]);
                 }
-                int max = getMax(outputFeature0.getFloatArray(),"labels_10A8_4");
+                int max = getMax(outputFeature0.getFloatArray(), "labels_10A8_4");
                 if (student.getId().equals(GetLabels("labels_10A8_4").get(max))) {
                     checkIDHS = true;
                     Common.idStudent = GetLabels("labels_10A8_4").get(max);
@@ -407,7 +409,7 @@ public class SendVehicleFragment extends Fragment {
                 for (int i = 0; i < outputFeature0.getFloatArray().length; i++) {
                     Log.e("acc", GetLabels("labels_11A5_1").get(i) + ":" + outputFeature0.getFloatArray()[i]);
                 }
-                int max = getMax(outputFeature0.getFloatArray(),"labels_11A5_1");
+                int max = getMax(outputFeature0.getFloatArray(), "labels_11A5_1");
                 if (student.getId().equals(GetLabels("labels_11A5_1").get(max))) {
                     checkIDHS = true;
                     Common.idStudent = GetLabels("labels_11A5_1").get(max);
@@ -428,7 +430,7 @@ public class SendVehicleFragment extends Fragment {
                 for (int i = 0; i < outputFeature0.getFloatArray().length; i++) {
                     Log.e("acc", GetLabels("labels_11A5_2").get(i) + ":" + outputFeature0.getFloatArray()[i]);
                 }
-                int max = getMax(outputFeature0.getFloatArray(),"labels_11A5_2");
+                int max = getMax(outputFeature0.getFloatArray(), "labels_11A5_2");
                 if (student.getId().equals(GetLabels("labels_11A5_2").get(max))) {
                     checkIDHS = true;
                     Common.idStudent = GetLabels("labels_11A5_2").get(max);
@@ -449,7 +451,7 @@ public class SendVehicleFragment extends Fragment {
                 for (int i = 0; i < outputFeature0.getFloatArray().length; i++) {
                     Log.e("acc", GetLabels("labels_11A5_3").get(i) + ":" + outputFeature0.getFloatArray()[i]);
                 }
-                int max = getMax(outputFeature0.getFloatArray(),"labels_11A5_3");
+                int max = getMax(outputFeature0.getFloatArray(), "labels_11A5_3");
                 if (student.getId().equals(GetLabels("labels_11A5_3").get(max))) {
                     checkIDHS = true;
                     Common.idStudent = GetLabels("labels_11A5_3").get(max);
@@ -467,7 +469,58 @@ public class SendVehicleFragment extends Fragment {
 
     }
 
+    int flagCamera = 0;
+
     private void onClick() {
+        btn_reverse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mPreview.stop();
+                if (flagCamera == 0) {
+                    Context context = getContext();
+                    FaceDetector detector = new FaceDetector.Builder(context)
+                            .setClassificationType(FaceDetector.ALL_LANDMARKS)
+                            .setMode(FaceDetector.ACCURATE_MODE)
+                            .build();
+                    detector.setProcessor(
+                            new MultiProcessor.Builder<>(new GraphicFaceTrackerFactory(mGraphicOverlay, getContext()))
+                                    .build());
+                    mCameraSource = new CameraSource.Builder(context, detector)
+                            .setRequestedPreviewSize(1024, 1280)
+                            .setFacing(CameraSource.CAMERA_FACING_BACK)
+                            .setRequestedFps(30.0f)
+                            .build();
+                    flagCamera = 1;
+                    try {
+                        mPreview.start(mCameraSource);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+
+                } else {
+                    Context context = getContext();
+                    FaceDetector detector = new FaceDetector.Builder(context)
+                            .setClassificationType(FaceDetector.ALL_LANDMARKS)
+                            .setMode(FaceDetector.ACCURATE_MODE)
+                            .build();
+                    detector.setProcessor(
+                            new MultiProcessor.Builder<>(new GraphicFaceTrackerFactory(mGraphicOverlay, getContext()))
+                                    .build());
+                    mCameraSource = new CameraSource.Builder(context, detector)
+                            .setRequestedPreviewSize(1024, 1280)
+                            .setFacing(CameraSource.CAMERA_FACING_FRONT)
+                            .setRequestedFps(30.0f)
+                            .build();
+                    flagCamera = 0;
+                    try {
+                        mPreview.start(mCameraSource);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
         btn_scan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -539,12 +592,12 @@ public class SendVehicleFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 TicketDBContext db = new TicketDBContext(getContext());
-                if (Common.checkLocation() <= 500) {
-                    if (flag == 0) {
-                        Toast.makeText(getContext(), "Phải quét khuôn mặt hoặc QR", Toast.LENGTH_LONG).show();
-                    } else {
-                        if (flag == 2) {
-                            if (checkIDHS) {
+                if (flag == 0) {
+                    Toast.makeText(getContext(), "Phải quét khuôn mặt hoặc QR", Toast.LENGTH_LONG).show();
+                } else {
+                    if (flag == 2) {
+                        if (checkIDHS) {
+                            if (Common.checkLocation() <= 500) {
                                 Ticket ticket = new Ticket();
                                 SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
                                 Date date = new Date();
@@ -577,12 +630,17 @@ public class SendVehicleFragment extends Fragment {
 
                                 }
                             } else {
-                                Toast.makeText(getContext(), "Khuôn mặt không khớp, quét lại", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getContext(), "Bạn đang không ở trường", Toast.LENGTH_LONG).show();
                             }
+
                         } else {
-                            if (Common.contentQR == null) {
-                                Toast.makeText(getContext(), "QR không hợp lệ", Toast.LENGTH_LONG).show();
-                            } else {
+                            Toast.makeText(getContext(), "Khuôn mặt không khớp, quét lại", Toast.LENGTH_LONG).show();
+                        }
+                    } else {
+                        if (Common.contentQR == null) {
+                            Toast.makeText(getContext(), "QR không hợp lệ", Toast.LENGTH_LONG).show();
+                        } else {
+                            if (Common.checkLocation() <= 500) {
                                 Ticket ticket = new Ticket();
                                 SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
                                 Date date = new Date();
@@ -617,15 +675,18 @@ public class SendVehicleFragment extends Fragment {
                                     }
 
                                 }
+                            } else {
+                                Toast.makeText(getContext(), "Bạn đang không ở trường", Toast.LENGTH_LONG).show();
                             }
+
                         }
                     }
-                } else {
-                    Toast.makeText(getContext(), "Bạn đang không ở trường, vui lòng đến trường gửi xe", Toast.LENGTH_LONG).show();
                 }
+
 
             }
         });
+
     }
 
     String[] vehicles = new String[]{"Xe máy", "Xe điện", "Xe đạp"};
@@ -640,7 +701,7 @@ public class SendVehicleFragment extends Fragment {
         sp_vehicle.setAdapter(adapter);
     }
 
-    private int getMax(float[] arr,String fileName) {
+    private int getMax(float[] arr, String fileName) {
         int index = 0;
         float min = 0.0f;
         for (int i = 0; i < GetLabels(fileName).size(); i++) {
@@ -664,7 +725,7 @@ public class SendVehicleFragment extends Fragment {
                         .build());
         mCameraSource = new CameraSource.Builder(context, detector)
                 .setRequestedPreviewSize(1024, 1280)
-                .setFacing(CameraSource.CAMERA_FACING_BACK)
+                .setFacing(CameraSource.CAMERA_FACING_FRONT)
                 .setRequestedFps(30.0f)
                 .build();
 
@@ -708,6 +769,7 @@ public class SendVehicleFragment extends Fragment {
         mGraphicOverlay = view.findViewById(R.id.faceOverlay);
         btn_capture = view.findViewById(R.id.btn_capture);
         img = view.findViewById(R.id.img);
+        btn_reverse = view.findViewById(R.id.btn_reverse);
 
     }
 

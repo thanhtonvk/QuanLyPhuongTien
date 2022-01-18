@@ -46,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
     Button btn_login;
     CheckBox cb_remember;
     Button btn_show;
-
     SQLiteHelper db;
 
     @Override
@@ -207,8 +206,10 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                     if (check) {
-                        dialog.dismiss();
+
                         startActivity(new Intent(MainActivity.this, AdminActivity.class));
+                        dialog.dismiss();
+                        finish();
                     } else {
                         Toast.makeText(MainActivity.this, "Tài khoản hoặc mật khẩu không chính xác", Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
@@ -234,8 +235,9 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                     if (Common.protector != null) {
-                        dialog.dismiss();
                         startActivity(new Intent(MainActivity.this, ProtectorActivity.class));
+                        dialog.dismiss();
+                        finish();
                     } else {
                         Toast.makeText(MainActivity.this, "Tài khoản hoặc mật khẩu không chính xác", Toast.LENGTH_SHORT).show();
                         dialog.dismiss();

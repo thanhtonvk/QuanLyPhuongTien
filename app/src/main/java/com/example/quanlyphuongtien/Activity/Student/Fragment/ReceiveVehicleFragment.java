@@ -107,6 +107,7 @@ public class ReceiveVehicleFragment extends Fragment {
     Model11a51 model11a51;
     Model11a52 model11a52;
     Model11a53 model11a53;
+    ImageView btn_reverse;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -464,7 +465,58 @@ public class ReceiveVehicleFragment extends Fragment {
         return byteBuffer;
     }
 
+    int flagCamera = 0;
+
     private void onClick() {
+        btn_reverse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mPreview.stop();
+                if (flagCamera == 0) {
+                    Context context = getContext();
+                    FaceDetector detector = new FaceDetector.Builder(context)
+                            .setClassificationType(FaceDetector.ALL_LANDMARKS)
+                            .setMode(FaceDetector.ACCURATE_MODE)
+                            .build();
+                    detector.setProcessor(
+                            new MultiProcessor.Builder<>(new GraphicFaceTrackerFactory(mGraphicOverlay, getContext()))
+                                    .build());
+                    mCameraSource = new CameraSource.Builder(context, detector)
+                            .setRequestedPreviewSize(1024, 1280)
+                            .setFacing(CameraSource.CAMERA_FACING_BACK)
+                            .setRequestedFps(30.0f)
+                            .build();
+                    flagCamera = 1;
+                    try {
+                        mPreview.start(mCameraSource);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+
+                } else {
+                    Context context = getContext();
+                    FaceDetector detector = new FaceDetector.Builder(context)
+                            .setClassificationType(FaceDetector.ALL_LANDMARKS)
+                            .setMode(FaceDetector.ACCURATE_MODE)
+                            .build();
+                    detector.setProcessor(
+                            new MultiProcessor.Builder<>(new GraphicFaceTrackerFactory(mGraphicOverlay, getContext()))
+                                    .build());
+                    mCameraSource = new CameraSource.Builder(context, detector)
+                            .setRequestedPreviewSize(1024, 1280)
+                            .setFacing(CameraSource.CAMERA_FACING_FRONT)
+                            .setRequestedFps(30.0f)
+                            .build();
+                    flagCamera = 0;
+                    try {
+                        mPreview.start(mCameraSource);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
         btn_scan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -513,30 +565,36 @@ public class ReceiveVehicleFragment extends Fragment {
                 TicketDBContext db = new TicketDBContext(getContext());
                 SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
                 Date date = new Date();
-                if (Common.checkLocation() <= 500) {
-                    if (flag == 0) {
-                        Toast.makeText(getContext(), "Phải quét khuôn mặt hoặc QR", Toast.LENGTH_LONG).show();
-                    } else {
-                        if (flag == 2) {
-                            if (checkIDHS) {
+                if (flag == 0) {
+                    Toast.makeText(getContext(), "Phải quét khuôn mặt hoặc QR", Toast.LENGTH_LONG).show();
+                } else {
+                    if (flag == 2) {
+                        if (checkIDHS) {
+                            if (Common.checkLocation() <= 500) {
                                 rs.setStatus(true);
                                 rs.setReceveDate(formatter.format(date));
                                 db.updateTicket(rs);
                             } else {
-                                Toast.makeText(getContext(), "Khuôn mặt không khớp", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getContext(), "Bạn đang không ở trường", Toast.LENGTH_LONG);
                             }
+
                         } else {
-                            if (Common.contentQR != null) {
+                            Toast.makeText(getContext(), "Khuôn mặt không khớp", Toast.LENGTH_LONG).show();
+                        }
+                    } else {
+                        if (Common.contentQR != null) {
+                            if (Common.checkLocation() <= 500) {
                                 rs.setStatus(true);
                                 rs.setReceveDate(formatter.format(date));
                                 db.updateTicket(rs);
                             } else {
-                                Toast.makeText(getContext(), "QR code không hợp lệ", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getContext(), "Bạn đang không ở trường", Toast.LENGTH_LONG);
                             }
+
+                        } else {
+                            Toast.makeText(getContext(), "QR code không hợp lệ", Toast.LENGTH_LONG).show();
                         }
                     }
-                } else {
-                    Toast.makeText(getContext(), "Bạn đang không ở trường, vui lòng đến trường nhận xe", Toast.LENGTH_LONG).show();
                 }
 
             }
@@ -557,6 +615,7 @@ public class ReceiveVehicleFragment extends Fragment {
         mGraphicOverlay = view.findViewById(R.id.faceOverlay);
         btn_capture = view.findViewById(R.id.btn_capture);
         img = view.findViewById(R.id.img);
+        btn_reverse = view.findViewById(R.id.btn_reverse);
     }
 
     Ticket rs;
@@ -611,7 +670,7 @@ public class ReceiveVehicleFragment extends Fragment {
                         .build());
         mCameraSource = new CameraSource.Builder(context, detector)
                 .setRequestedPreviewSize(1024, 1280)
-                .setFacing(CameraSource.CAMERA_FACING_BACK)
+                .setFacing(CameraSource.CAMERA_FACING_FRONT)
                 .setRequestedFps(30.0f)
                 .build();
 

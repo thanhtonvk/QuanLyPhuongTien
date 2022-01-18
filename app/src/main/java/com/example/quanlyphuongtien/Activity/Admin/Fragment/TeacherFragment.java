@@ -89,9 +89,12 @@ public class TeacherFragment extends Fragment {
                     Teacher teacher = dataSnapshot.getValue(Teacher.class);
                     teacherList.add(teacher);
                 }
-                adapter = new TeacherListAdapter(getContext(), teacherList);
-                lv_teacher.setAdapter(adapter);
-                edt_search.setAdapter(adapter);
+                if(getContext()!=null){
+                    adapter = new TeacherListAdapter(getContext(), teacherList);
+                    lv_teacher.setAdapter(adapter);
+                    edt_search.setAdapter(adapter);
+
+                }
 
 
             }

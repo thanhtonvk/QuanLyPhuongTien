@@ -131,6 +131,7 @@ public class ConfirmFragment extends Fragment {
         });
     }
 
+    int numMonth = -1;
 
     //set dialog info
     private void setDialogFeeInfo(int postion) {
@@ -159,8 +160,7 @@ public class ConfirmFragment extends Fragment {
             }
         });
         if (fee.isConfirm()) {
-            sp_month.setVisibility(View.GONE);
-            btn_confirm.setVisibility(View.GONE);
+
             edt_fee.setText(feeMoney + "");
             tv_id.setText(fee.getIdSV());
             tv_name.setText(fee.getName());
@@ -168,6 +168,36 @@ public class ConfirmFragment extends Fragment {
             tv_startDate.setText(fee.getStartDate());
             tv_endDate.setText(fee.getEndDate());
             tv_Money.setText(fee.getMoney() + "");
+            numMonth = countMonth(tv_startDate.getText().toString(), tv_endDate.getText().toString());
+            sp_month.setText(numMonth + "");
+            tv_startDate.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    setDialogDatePicker(tv_startDate);
+                }
+            });
+            tv_endDate.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    numMonth = -1;
+                    setDialogDatePickerEnd(sp_month, tv_Money, tv_startDate, tv_endDate, edt_fee);
+                }
+            });
+            btn_confirm.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    db.other.child("1").setValue(edt_fee.getText().toString());
+                    fee.setMoney(Integer.parseInt(tv_Money.getText().toString()));
+                    fee.setStartDate(tv_startDate.getText().toString());
+                    fee.setEndDate(tv_endDate.getText().toString());
+                    int month = countMonth(fee.getStartDate(), fee.getEndDate());
+                    int money = month * feeMoney;
+                    fee.setMoney(money);
+                    fee.setConfirm(true);
+                    db.updateFee(fee);
+                    dialog.dismiss();
+                }
+            });
         } else {
             edt_fee.setText(feeMoney + "");
             tv_id.setText(fee.getIdSV());
@@ -258,12 +288,38 @@ public class ConfirmFragment extends Fragment {
             LocalDate startDate = LocalDate.of(startYear, startMonth, 1);
             LocalDate endDate = LocalDate.of(endYear, endMonth, 1);
             Period period = Period.between(startDate, endDate);
-            int numOfMonth = (period.getYears() * 12) + period.getMonths();
-            sp_month.setText(numOfMonth + "");
-            int fee = Integer.parseInt(edt_fee.getText().toString());
-            tv_money.setText((numOfMonth * fee) + "");
+            if (numMonth == -1) {
+                int numOfMonth = (period.getYears() * 12) + period.getMonths() + 1;
+                sp_month.setText(numOfMonth + "");
+                int fee = Integer.parseInt(edt_fee.getText().toString());
+                tv_money.setText((numOfMonth * fee) + "");
+            } else {
+                int numOfMonth = (period.getYears() * 12) + period.getMonths() + 1;
+                sp_month.setText((numOfMonth - numMonth) + "");
+                int fee = Integer.parseInt(edt_fee.getText().toString());
+                tv_money.setText(((numOfMonth - numMonth) * fee) + "");
+            }
+
         }
 
+    }
+
+    private int countMonth(String start, String end) {
+
+        String[] arrStart = start.split("-");
+        String[] arrEnd = end.split("-");
+        int startYear = Integer.parseInt(arrStart[2]);
+        int endYear = Integer.parseInt(arrEnd[2]);
+        int startMonth = Integer.parseInt(arrStart[1]);
+        int endMonth = Integer.parseInt(arrEnd[1]);
+        int numOfMonth = 0;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            LocalDate startDate = LocalDate.of(startYear, startMonth, 1);
+            LocalDate endDate = LocalDate.of(endYear, endMonth, 1);
+            Period period = Period.between(startDate, endDate);
+            numOfMonth = (period.getYears() * 12) + period.getMonths() + 1;
+        }
+        return numOfMonth;
     }
 
     private Student getStudent(String ID) {

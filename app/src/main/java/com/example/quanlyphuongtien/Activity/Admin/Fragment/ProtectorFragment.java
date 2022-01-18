@@ -2,6 +2,7 @@ package com.example.quanlyphuongtien.Activity.Admin.Fragment;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.quanlyphuongtien.Activity.Admin.Adapter.ProtectorListAdapter;
+import com.example.quanlyphuongtien.Activity.Admin.AdminActivity;
 import com.example.quanlyphuongtien.Database.ProtectorDBContext;
 import com.example.quanlyphuongtien.Entities.Protector;
 import com.example.quanlyphuongtien.R;
@@ -88,7 +90,7 @@ public class ProtectorFragment extends Fragment {
                     Protector protector = dataSnapshot.getValue(Protector.class);
                     protectorList.add(protector);
                 }
-                if(getContext()!=null){
+                if (getContext() != null) {
                     adapter = new ProtectorListAdapter(getContext(), protectorList);
                     lv_protector.setAdapter(adapter);
                     edt_search.setAdapter(adapter);
@@ -145,6 +147,7 @@ public class ProtectorFragment extends Fragment {
                     //set fee
                     db.updateProtector(protector);
                     dialog.dismiss();
+                    startActivity(new Intent(getContext(), AdminActivity.class));
                 } else {
                     if (edt_name.getText().toString().equals("")) {
                         tv_noti_name.setText("Tên không được để trống");

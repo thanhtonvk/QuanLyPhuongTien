@@ -1,12 +1,12 @@
 package com.example.quanlyphuongtien.Activity.Student;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -19,6 +19,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.example.quanlyphuongtien.Activity.Student.Adapter.StudentFragmentAdapter;
 import com.example.quanlyphuongtien.Entities.Common;
+import com.example.quanlyphuongtien.MainActivity;
 import com.example.quanlyphuongtien.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -33,11 +34,7 @@ public class StudentActivity extends AppCompatActivity implements LocationListen
 
     BottomNavigationView bottomNav;
     ViewPager viewPager;
-    LocationManager locationManager;
-    LocationListener locationListener;
-    private FusedLocationProviderClient locationProviderClient;
-    private Geocoder geocoder;
-    private List<Address> addresses;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +44,9 @@ public class StudentActivity extends AppCompatActivity implements LocationListen
         setViewPager();
         getCurrentLocation();
     }
-
+    private FusedLocationProviderClient locationProviderClient;
+    private Geocoder geocoder;
+    private List<Address> addresses;
     private void getCurrentLocation() {
         geocoder = new Geocoder(StudentActivity.this, Locale.getDefault());
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -150,5 +149,10 @@ public class StudentActivity extends AppCompatActivity implements LocationListen
     @Override
     public void onProviderDisabled(@NonNull String provider) {
 
+    }
+    @Override
+    public void onBackPressed() {
+        finish();
+        startActivity(new Intent(getApplicationContext(), MainActivity.class));
     }
 }

@@ -94,7 +94,7 @@ public class GeneralFragment extends Fragment {
         btn_report.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                WriteFile(studentList);
+                WriteFile(studentList, "Danh sách đã đăng ký", "");
                 sendFile();
             }
         });
@@ -125,7 +125,7 @@ public class GeneralFragment extends Fragment {
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
         File link = getContext().getExternalFilesDir("").getParentFile();
-        File file = new File(link, "report.pdf");
+        File file = new File(link, "report.csv");
         if (file.exists()) {
             Uri path = FileProvider.getUriForFile(getContext(), getContext().getApplicationContext().getPackageName() + ".provider", file);
             if (path != null) {
@@ -140,15 +140,20 @@ public class GeneralFragment extends Fragment {
 
     }
 
-    public void WriteFile(List<Student> studentList) {
+    String thangdadong = "";
+
+    public void WriteFile(List<Student> studentList, String message, String month) {
         File link = getContext().getExternalFilesDir("").getParentFile();
-        File file = new File(link, "report.pdf");
+        File file = new File(link, "report.csv");
         try {
             FileWriter fileWriter = new FileWriter(file);
-            fileWriter.write("STT,Mã học sinh,Họ và tên,Ngày,Lớp\n");
+            fileWriter.write(message);
+            fileWriter.write("STT,Mã học sinh,Họ và tên,Ngày,Lớp,Tháng\n");
             int index = 1;
             for (Student student : studentList) {
-                String text = index + "," + student.getId() + "," + student.getName() + "," + student.getDateOfBirth() + "," + student.getClassName() + "\n";
+                String tmp = getThangdadong(index - 1);
+                thangdadong = "";
+                String text = index + "," + student.getId() + "," + student.getName() + "," + student.getDateOfBirth() + "," + student.getClassName() + "," + tmp + "\n";
                 fileWriter.write(text);
                 index++;
             }
@@ -203,7 +208,7 @@ public class GeneralFragment extends Fragment {
         btn_report.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                WriteFile(studentList);
+                WriteFile(studentList, "Danh sách chưa nộp đủ", thangdadong);
                 sendFile();
             }
         });
@@ -258,7 +263,7 @@ public class GeneralFragment extends Fragment {
         btn_report.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                WriteFile(studentList);
+                WriteFile(studentList, "", "");
                 sendFile();
             }
         });
@@ -314,7 +319,7 @@ public class GeneralFragment extends Fragment {
         btn_report.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                WriteFile(studentList);
+                WriteFile(studentList, "Danh sách đã đóng phí", thangdadong);
                 sendFile();
             }
         });
@@ -356,7 +361,123 @@ public class GeneralFragment extends Fragment {
 
     List<Fee> feeList;
     CheckBox cb1, cb2, cb3, cb4, cb5, cb6, cb7, cb8, cb9, cb10, cb11, cb12;
-    Button btn_chuadongdu;
+
+    private String getThangdadong(int position) {
+        setCheck();
+        Dialog dialog = new Dialog(getContext());
+        dialog.setContentView(R.layout.dialog_showmonth);
+        cb1 = dialog.findViewById(R.id.cb_1);
+        cb2 = dialog.findViewById(R.id.cb_2);
+        cb3 = dialog.findViewById(R.id.cb_3);
+        cb4 = dialog.findViewById(R.id.cb_4);
+        cb5 = dialog.findViewById(R.id.cb_5);
+        cb6 = dialog.findViewById(R.id.cb_6);
+        cb7 = dialog.findViewById(R.id.cb_7);
+        cb8 = dialog.findViewById(R.id.cb_8);
+        cb9 = dialog.findViewById(R.id.cb_9);
+        cb10 = dialog.findViewById(R.id.cb_10);
+        cb11 = dialog.findViewById(R.id.cb_11);
+        cb12 = dialog.findViewById(R.id.cb_12);
+        Fee fee = feeList.get(position);
+        String startDate = fee.getStartDate();
+        String endDate = fee.getEndDate();
+        if (endDate.equals("")) {
+            cb1.setChecked(false);
+            cb2.setChecked(false);
+            cb3.setChecked(false);
+            cb4.setChecked(false);
+            cb5.setChecked(false);
+            cb6.setChecked(false);
+            cb7.setChecked(false);
+            cb8.setChecked(false);
+            cb9.setChecked(false);
+            cb10.setChecked(false);
+            cb11.setChecked(false);
+            cb12.setChecked(false);
+        } else {
+            int monthNow = 0, yearNow = 0;
+            int monthSchool = 8, yearSchool = 0;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                monthNow = LocalDate.now().getMonthValue();
+                yearNow = LocalDate.now().getYear();
+            }
+            if (monthSchool > monthNow) {
+                yearSchool = yearNow - 1;
+            } else {
+                yearSchool = yearNow;
+            }
+            String[] start = startDate.split("-");
+            String[] end = endDate.split("-");
+            int monthStart = Integer.parseInt(start[1]);
+            int monthEnd = Integer.parseInt(end[1]);
+            if ((monthEnd >= 8 && yearNow == yearSchool) || (monthEnd < 8 && yearNow - 1 == yearSchool)) {
+                if (monthStart < monthEnd) {
+                    for (int i = monthStart - 1; i < monthEnd; i++) {
+                        checkList.get(i).setKt(true);
+                    }
+                } else if (monthStart > monthEnd) {
+                    for (int i = monthStart - 1; i < 12; i++) {
+                        checkList.get(i).setKt(true);
+                    }
+                    for (int i = 0; i < monthEnd; i++) {
+                        checkList.get(i).setKt(true);
+                    }
+                }
+            }
+            if (checkList.get(7).isKt()) {
+                thangdadong += "8;";
+                cb8.setChecked(true);
+            }
+            if (checkList.get(8).isKt()) {
+                thangdadong += "9;";
+                cb9.setChecked(true);
+            }
+            if (checkList.get(9).isKt()) {
+                thangdadong += "10;";
+                cb10.setChecked(true);
+            }
+            if (checkList.get(10).isKt()) {
+                thangdadong += "11;";
+                cb11.setChecked(true);
+            }
+            if (checkList.get(11).isKt()) {
+                thangdadong += "12;";
+                cb12.setChecked(true);
+            }
+
+            if (checkList.get(0).isKt()) {
+                thangdadong += "1;";
+                cb1.setChecked(true);
+            }
+            if (checkList.get(1).isKt()) {
+                thangdadong += "2;";
+                cb2.setChecked(true);
+            }
+            if (checkList.get(2).isKt()) {
+                thangdadong += "3;";
+                cb3.setChecked(true);
+            }
+            if (checkList.get(3).isKt()) {
+                thangdadong += "4;";
+                cb4.setChecked(true);
+            }
+            if (checkList.get(4).isKt()) {
+                thangdadong += "5;";
+                cb5.setChecked(true);
+            }
+            if (checkList.get(5).isKt()) {
+                thangdadong += "6;";
+                cb6.setChecked(true);
+            }
+            if (checkList.get(6).isKt()) {
+                thangdadong += "7;";
+                cb7.setChecked(true);
+            }
+
+
+        }
+        return thangdadong;
+    }
 
     private void setDialogMonth(int position) {
         setCheck();
@@ -424,39 +545,51 @@ public class GeneralFragment extends Fragment {
 
 
             if (checkList.get(0).isKt()) {
+
                 cb1.setChecked(true);
             }
             if (checkList.get(1).isKt()) {
+
                 cb2.setChecked(true);
             }
             if (checkList.get(2).isKt()) {
+
                 cb3.setChecked(true);
             }
             if (checkList.get(3).isKt()) {
+
                 cb4.setChecked(true);
             }
             if (checkList.get(4).isKt()) {
+
                 cb5.setChecked(true);
             }
             if (checkList.get(5).isKt()) {
+
                 cb6.setChecked(true);
             }
             if (checkList.get(6).isKt()) {
+
                 cb7.setChecked(true);
             }
             if (checkList.get(7).isKt()) {
+
                 cb8.setChecked(true);
             }
             if (checkList.get(8).isKt()) {
+
                 cb9.setChecked(true);
             }
             if (checkList.get(9).isKt()) {
+
                 cb10.setChecked(true);
             }
             if (checkList.get(10).isKt()) {
+
                 cb11.setChecked(true);
             }
             if (checkList.get(11).isKt()) {
+
                 cb12.setChecked(true);
             }
 

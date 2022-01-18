@@ -39,9 +39,14 @@ public class TicketDBContext {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()
                 ) {
                     Ticket th = dataSnapshot.getValue(Ticket.class);
-                    if (!th.isStatus() && ticket.getPlate().contains(th.getPlate())) {
-                        kt = true;
-                        break;
+                    if (ticket.getPlate() != null) {
+                        if (th.getPlate() != null) {
+                            if (!th.isStatus() && ticket.getPlate().contains(th.getPlate())) {
+                                kt = true;
+                                break;
+                            }
+                        }
+
                     }
                 }
             }
@@ -54,17 +59,17 @@ public class TicketDBContext {
         });
         if (kt) {
             Toast.makeText(context, "Xe đã được gửi rồi", Toast.LENGTH_SHORT).show();
-            dialog.cancel();
+            dialog.dismiss();
         } else {
             reference.child(ticket.getId()).setValue(ticket).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if (task.isSuccessful()) {
                         Toast.makeText(context, "Thành công", Toast.LENGTH_SHORT).show();
-                        dialog.cancel();
+                        dialog.dismiss();
                     } else {
                         Toast.makeText(context, "Lỗi, kiểm tra lại", Toast.LENGTH_SHORT).show();
-                        dialog.cancel();
+                        dialog.dismiss();
                     }
                 }
             });

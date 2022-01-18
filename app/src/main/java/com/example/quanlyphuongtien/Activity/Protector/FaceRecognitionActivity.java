@@ -95,6 +95,8 @@ public class FaceRecognitionActivity extends AppCompatActivity {
     Spinner sp_vehicle;
     EditText edt_plate;
     LinearLayout layout_other;
+    float acc = 0;
+    TextView tv_plate, tv_vehicle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -183,30 +185,37 @@ public class FaceRecognitionActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (student != null) {
-                    TicketDBContext db = new TicketDBContext(FaceRecognitionActivity.this);
-                    Ticket ticket = new Ticket();
-                    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-                    Date date = new Date();
-                    ticket.setId(random.nextInt() + "");
-                    ticket.setName(student.getName());
-                    ticket.setStatus(false);
-                    ticket.setSendDate(formatter.format(date));
-                    ticket.setIdhs(student.getId());
-                    if (student.getVehicleCategory() == null || student.getNumberPlate() == null) {
-                        if (edt_plate.getText().toString().equals("")) {
-                            Toast.makeText(FaceRecognitionActivity.this, "Phải nhập biển số", Toast.LENGTH_LONG).show();
+                    if (Common.checkLocation() <= 500) {
+                        TicketDBContext db = new TicketDBContext(FaceRecognitionActivity.this);
+                        Ticket ticket = new Ticket();
+                        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                        Date date = new Date();
+                        ticket.setId(random.nextInt() + "");
+                        ticket.setName(student.getName());
+                        ticket.setStatus(false);
+                        ticket.setSendDate(formatter.format(date));
+                        ticket.setIdhs(student.getId());
+                        if (student.getVehicleCategory() == null || student.getNumberPlate() == null||cb_othervehicle.isChecked()) {
+                            if (edt_plate.getText().toString().equals("")) {
+                                Toast.makeText(FaceRecognitionActivity.this, "Phải nhập biển số", Toast.LENGTH_LONG).show();
+                            } else {
+                                ticket.setVehicle(sp_vehicle.getSelectedItem().toString());
+                                ticket.setPlate(edt_plate.getText().toString());
+                                db.addTicket(ticket);
+                                finish();
+                            }
                         } else {
-                            ticket.setVehicle(sp_vehicle.getSelectedItem().toString());
-                            ticket.setPlate(edt_plate.getText().toString());
+                            ticket.setVehicle(student.getVehicleCategory());
+                            ticket.setPlate(student.getNumberPlate());
                             db.addTicket(ticket);
                             finish();
                         }
                     } else {
-                        ticket.setVehicle(student.getVehicleCategory());
-                        ticket.setPlate(student.getNumberPlate());
-                        db.addTicket(ticket);
-                        finish();
+                        Toast.makeText(getApplicationContext(), "Bạn đang không ở trường, không được xác nhận", Toast.LENGTH_LONG).show();
                     }
+
+                } else {
+                    Toast.makeText(FaceRecognitionActivity.this, "Không thể nhận diện được khuôn mặt", Toast.LENGTH_LONG).show();
                 }
 
             }
@@ -214,6 +223,10 @@ public class FaceRecognitionActivity extends AppCompatActivity {
         btn_capture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                tv_id.setText("");
+                tv_name.setText("");
+                tv_plate.setText("");
+                tv_vehicle.setText("");
                 if (check == 0) {
                     check = 1;
                     mCameraSource.takePicture(null, new CameraSource.PictureCallback() {
@@ -235,13 +248,26 @@ public class FaceRecognitionActivity extends AppCompatActivity {
                                 // Runs model inference and gets result.
                                 Model.Outputs outputs = model.process(inputFeature0);
                                 TensorBuffer outputFeature0 = outputs.getOutputFeature0AsTensorBuffer();
+
                                 int max = getMax(outputFeature0.getFloatArray());
-                                tv_id.setText("Mã học sinh" + GetLabels().get(max));
-                                if (getStudent(GetLabels().get(max)).getName() != null) {
-                                    tv_name.setText("Họ tên: " + getStudent(GetLabels().get(max)).getName());
-                                    Common.student = getStudent(GetLabels().get(max));
+                                acc = outputFeature0.getFloatArray()[max];
+                                if (acc > 0.5) {
+                                    tv_id.setText("Mã học sinh: " + GetLabels().get(max));
+                                    if (getStudent(GetLabels().get(max)).getName() != null) {
+                                        tv_name.setText("Họ tên: " + getStudent(GetLabels().get(max)).getName());
+                                        Common.student = getStudent(GetLabels().get(max));
+                                        if (student.getNumberPlate() != null) {
+                                            tv_plate.setText("Biển số: " + student.getNumberPlate());
+                                        }
+                                        if (student.getVehicleCategory() != null) {
+                                            tv_vehicle.setText("Loại xe: " + student.getVehicleCategory());
+                                        }
+                                    }
+                                    Common.idStudent = GetLabels().get(max);
+                                } else {
+                                    Toast.makeText(FaceRecognitionActivity.this, "Không thể nhận diện", Toast.LENGTH_LONG).show();
                                 }
-                                Common.idStudent = GetLabels().get(max);
+
                                 // Releases model resources if no longer used.
                                 model.close();
                             } catch (IOException e) {
@@ -385,6 +411,8 @@ public class FaceRecognitionActivity extends AppCompatActivity {
         edt_plate = findViewById(R.id.edt_plate);
         layout_other = findViewById(R.id.layout_other);
         cb_othervehicle = findViewById(R.id.cb_other);
+        tv_plate = findViewById(R.id.tv_plate);
+        tv_vehicle = findViewById(R.id.tv_vehicle);
     }
 
     private int getMax(float[] arr) {

@@ -77,7 +77,6 @@
                 android:textColor="#1E88E5" />
 
             <TextView
-                android:gravity="center_vertical"
                 android:id="@+id/tv_vehicle"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
@@ -85,9 +84,11 @@
                 android:layout_marginRight="20dp"
                 android:background="@drawable/border_textview"
                 android:drawableRight="@drawable/ic_vihicle"
+                android:gravity="center_vertical"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
                 android:textSize="18sp" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -96,8 +97,6 @@
                 android:textColor="#1E88E5" />
 
             <EditText
-                android:text="0"
-                android:inputType="number"
                 android:id="@+id/edt_fee"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
@@ -106,9 +105,12 @@
                 android:background="@drawable/border_textview"
                 android:drawableRight="@drawable/ic_money"
                 android:gravity="center_vertical"
+                android:inputType="number"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
+                android:text="0"
                 android:textSize="18sp" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -171,7 +173,6 @@
                 android:textSize="18sp" />
 
 
-
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -202,7 +203,7 @@
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/border_textview"
                 android:backgroundTint="#039BE5"
-                android:text="Nộp"
+                android:text="Xác nhận"
                 android:textColor="@color/white" />
 
             <Button

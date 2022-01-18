@@ -1,5 +1,6 @@
 package com.example.quanlyphuongtien.Activity.Admin;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -9,7 +10,7 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.quanlyphuongtien.Activity.Admin.Adapter.AdminFragmentAdapter;
-import com.example.quanlyphuongtien.Activity.Teacher.Adapter.TeacherFragmentAdapter;
+import com.example.quanlyphuongtien.MainActivity;
 import com.example.quanlyphuongtien.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -72,5 +73,11 @@ public class AdminActivity extends AppCompatActivity {
                 return true;
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        startActivity(new Intent(getApplicationContext(), MainActivity.class));
     }
 }
