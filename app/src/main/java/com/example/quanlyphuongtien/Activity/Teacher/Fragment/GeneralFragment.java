@@ -73,6 +73,12 @@ public class GeneralFragment extends Fragment {
                 loadListPaid();
             }
         });
+        view.findViewById(R.id.btn_chuanopduphi).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                loadListChuaNopDu();
+            }
+        });
     }
 
     private void loadListRegistered() {
@@ -184,13 +190,13 @@ public class GeneralFragment extends Fragment {
 
     }
 
-    private void loadListNonPay() {
+    private void loadListChuaNopDu() {
         FeeDBContext dbContext = new FeeDBContext(getContext());
         Dialog dialog = new Dialog(getContext());
         dialog.show();
         dialog.setContentView(R.layout.dialog_list_registered);
         TextView tv_mess = dialog.findViewById(R.id.tv_message);
-        tv_mess.setText("DANH SÁCH CHƯA ĐÓNG PHÍ GỬI XE");
+        tv_mess.setText("DANH SÁCH CHƯA ĐÓNG ĐỦ PHÍ GỬI XE");
         List<Student> studentList = new ArrayList<>();
         ListView lv_student = dialog.findViewById(R.id.lv_student);
         Button btn_report = dialog.findViewById(R.id.btn_report);
@@ -217,15 +223,7 @@ public class GeneralFragment extends Fragment {
                             }
                         }
                     }
-                    if (!fee.isConfirm()) {
-                        if (getStudent(fee.getIdSV()).getClassName() != null) {
-                            if (getStudent(fee.getIdSV()).getClassName().equals(Common.teacher.getHeadTeacher())) {
-                                studentList.add(getStudent(fee.getIdSV()));
-                                feeList.add(fee);
-                            }
-                        }
 
-                    }
                 }
                 if (getContext() != null) {
                     StudentListAdapter listAdapter = new StudentListAdapter(getContext(), studentList);
@@ -244,6 +242,63 @@ public class GeneralFragment extends Fragment {
                 setDialogMonth(position);
             }
         });
+
+    }
+
+    private void loadListNonPay() {
+        FeeDBContext dbContext = new FeeDBContext(getContext());
+        Dialog dialog = new Dialog(getContext());
+        dialog.show();
+        dialog.setContentView(R.layout.dialog_list_registered);
+        TextView tv_mess = dialog.findViewById(R.id.tv_message);
+        tv_mess.setText("DANH SÁCH CHƯA ĐÓNG PHÍ GỬI XE");
+        List<Student> studentList = new ArrayList<>();
+        ListView lv_student = dialog.findViewById(R.id.lv_student);
+        Button btn_report = dialog.findViewById(R.id.btn_report);
+        btn_report.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                WriteFile(studentList);
+                sendFile();
+            }
+        });
+        dbContext.reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    Fee fee = dataSnapshot.getValue(Fee.class);
+//                    if (fee.isConfirm()) {
+//                        if (!checkComplete(fee.getStartDate(), fee.getEndDate())) {
+//                            if (getStudent(fee.getIdSV()).getClassName() != null) {
+//                                if (getStudent(fee.getIdSV()).getClassName().equals(Common.teacher.getHeadTeacher())) {
+//                                    studentList.add(getStudent(fee.getIdSV()));
+//                                    feeList.add(fee);
+//                                }
+//                            }
+//                        }
+//                    }
+                    if (!fee.isConfirm()) {
+                        if (getStudent(fee.getIdSV()).getClassName() != null) {
+                            if (getStudent(fee.getIdSV()).getClassName().equals(Common.teacher.getHeadTeacher())) {
+                                studentList.add(getStudent(fee.getIdSV()));
+
+                            }
+                        }
+
+                    }
+                }
+                if (getContext() != null) {
+                    StudentListAdapter listAdapter = new StudentListAdapter(getContext(), studentList);
+                    lv_student.setAdapter(listAdapter);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
     }
 
     private void loadListPaid() {
@@ -266,17 +321,18 @@ public class GeneralFragment extends Fragment {
         dbContext.reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                feeList = new ArrayList<>();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     Fee fee = dataSnapshot.getValue(Fee.class);
                     if (fee.isConfirm()) {
-                        if (checkComplete(fee.getStartDate(), fee.getEndDate())) {
-                            if (getStudent(fee.getIdSV()).getClassName() != null) {
-                                if (getStudent(fee.getIdSV()).getClassName().equals(Common.teacher.getHeadTeacher())) {
-                                    studentList.add(getStudent(fee.getIdSV()));
-                                }
+//                        if (checkComplete(fee.getStartDate(), fee.getEndDate())) {
+                        if (getStudent(fee.getIdSV()).getClassName() != null) {
+                            if (getStudent(fee.getIdSV()).getClassName().equals(Common.teacher.getHeadTeacher())) {
+                                studentList.add(getStudent(fee.getIdSV()));
+                                feeList.add(fee);
                             }
                         }
-
+//
                     }
                 }
                 if (getContext() != null) {
@@ -290,10 +346,17 @@ public class GeneralFragment extends Fragment {
 
             }
         });
+        lv_student.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                setDialogMonth(position);
+            }
+        });
     }
 
     List<Fee> feeList;
     CheckBox cb1, cb2, cb3, cb4, cb5, cb6, cb7, cb8, cb9, cb10, cb11, cb12;
+    Button btn_chuadongdu;
 
     private void setDialogMonth(int position) {
         setCheck();

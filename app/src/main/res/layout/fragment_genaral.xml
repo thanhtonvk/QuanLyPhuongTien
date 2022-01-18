@@ -58,4 +58,20 @@
         android:textAllCaps="false"
         android:textColor="#1E88E5"
         tools:ignore="DuplicateIds" />
+
+    <Button
+        android:id="@+id/btn_chuanopduphi"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/border_textview"
+        android:gravity="center"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:text="Danh sách học sinh chưa nộp đủ phí"
+        android:textAllCaps="false"
+        android:textColor="#1E88E5"
+        tools:ignore="DuplicateIds" />
 </LinearLayout>
