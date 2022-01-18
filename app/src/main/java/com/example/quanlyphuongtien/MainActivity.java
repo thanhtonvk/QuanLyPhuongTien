@@ -174,13 +174,18 @@ public class MainActivity extends AppCompatActivity {
                         Teacher teacher = dataSnapshot.getValue(Teacher.class);
                         if (teacher.getUsername().trim().equalsIgnoreCase(user.trim()) && teacher.getPassword().trim().equalsIgnoreCase(pass.trim())) {
                             Common.teacher = teacher;
+                            dbContext.reference.onDisconnect();
                         }
                     }
 
                     if (Common.teacher != null) {
-                        startActivity(new Intent(MainActivity.this, TeacherActivity.class));
-                        dialog.dismiss();
-                        finish();
+                        if (!Common.flagTeacher) {
+                            startActivity(new Intent(MainActivity.this, TeacherActivity.class));
+                            Common.flagTeacher = true;
+                            dialog.dismiss();
+                            finish();
+                        }
+
                     } else {
                         Toast.makeText(MainActivity.this, "Tài khoản hoặc mật khẩu không chính xác", Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
@@ -232,12 +237,17 @@ public class MainActivity extends AppCompatActivity {
                         Protector protector = dataSnapshot.getValue(Protector.class);
                         if (protector.getUsername().trim().equalsIgnoreCase(edt_username.getText().toString().trim()) && protector.getPassword().trim().equalsIgnoreCase(edt_password.getText().toString().trim())) {
                             Common.protector = protector;
+                            dbContext.reference.onDisconnect();
                         }
                     }
                     if (Common.protector != null) {
-                        startActivity(new Intent(MainActivity.this, ProtectorActivity.class));
-                        dialog.dismiss();
-                        finish();
+                        if (!Common.flagProtector) {
+                            startActivity(new Intent(MainActivity.this, ProtectorActivity.class));
+                            Common.flagProtector = true;
+                            dialog.dismiss();
+                            finish();
+                        }
+
                     } else {
                         Toast.makeText(MainActivity.this, "Tài khoản hoặc mật khẩu không chính xác", Toast.LENGTH_SHORT).show();
                         dialog.dismiss();

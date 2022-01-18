@@ -77,7 +77,7 @@ public class AdminActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        finish();
+        finishAffinity();
         startActivity(new Intent(getApplicationContext(), MainActivity.class));
     }
 }

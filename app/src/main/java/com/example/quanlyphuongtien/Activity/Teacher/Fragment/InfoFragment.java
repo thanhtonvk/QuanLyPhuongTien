@@ -76,7 +76,6 @@ public class InfoFragment extends Fragment {
         btn_logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().finish();
                 teacher = null;
                 startActivity(new Intent(getContext(), MainActivity.class));
             }
@@ -162,7 +161,7 @@ public class InfoFragment extends Fragment {
                 tv_dateofbirth.setText(String.format("%s/%s/%s", i2, i1 + 1, i));
             }
         };
-        DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),  android.R.style.Theme_Holo_Dialog_NoActionBar,dateSetListener, selectedYear, selectedMonth, selectedDay);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(), android.R.style.Theme_Holo_Dialog_NoActionBar, dateSetListener, selectedYear, selectedMonth, selectedDay);
         datePickerDialog.show();
     }
 

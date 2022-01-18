@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.quanlyphuongtien.Activity.Teacher.Adapter.TeacherFragmentAdapter;
+import com.example.quanlyphuongtien.Entities.Common;
 import com.example.quanlyphuongtien.MainActivity;
 import com.example.quanlyphuongtien.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -25,6 +26,10 @@ public class TeacherActivity extends AppCompatActivity {
         setContentView(R.layout.activity_teacher);
         initView();
         setViewPager();
+        if (Common.teacher == null) {
+            finish();
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+        }
     }
 
     private void initView() {

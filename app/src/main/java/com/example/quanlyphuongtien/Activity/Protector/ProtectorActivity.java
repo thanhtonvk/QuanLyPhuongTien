@@ -38,6 +38,10 @@ public class ProtectorActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_protector);
+        if (Common.protector == null) {
+            finish();
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+        }
         initView();
         setViewPager();
         getCurrentLocation();
@@ -51,6 +55,7 @@ public class ProtectorActivity extends AppCompatActivity {
     private FusedLocationProviderClient locationProviderClient;
     private Geocoder geocoder;
     private List<Address> addresses;
+
     private void getCurrentLocation() {
         locationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         geocoder = new Geocoder(ProtectorActivity.this, Locale.getDefault());
@@ -75,6 +80,7 @@ public class ProtectorActivity extends AppCompatActivity {
         });
 
     }
+
     //set view pager
     private void setViewPager() {
         ProtectorFragmentAdapter fragmentAdapter = new ProtectorFragmentAdapter(getSupportFragmentManager(), FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
@@ -128,6 +134,7 @@ public class ProtectorActivity extends AppCompatActivity {
             }
         });
     }
+
     @Override
     public void onBackPressed() {
         finish();

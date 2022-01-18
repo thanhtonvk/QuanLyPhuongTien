@@ -21,6 +21,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.quanlyphuongtien.Activity.Admin.Adapter.TeacherListAdapter;
 import com.example.quanlyphuongtien.Database.TeacherDBContext;
+import com.example.quanlyphuongtien.Entities.Common;
 import com.example.quanlyphuongtien.Entities.Teacher;
 import com.example.quanlyphuongtien.R;
 import com.google.firebase.database.DataSnapshot;
@@ -89,7 +90,7 @@ public class TeacherFragment extends Fragment {
                     Teacher teacher = dataSnapshot.getValue(Teacher.class);
                     teacherList.add(teacher);
                 }
-                if(getContext()!=null){
+                if (getContext() != null) {
                     adapter = new TeacherListAdapter(getContext(), teacherList);
                     lv_teacher.setAdapter(adapter);
                     edt_search.setAdapter(adapter);
@@ -217,6 +218,8 @@ public class TeacherFragment extends Fragment {
                     teacher.setPassword(edt_password.getText().toString());
                     teacher.setHeadTeacher(tv_classname.getText().toString());
                     db.updateTeacher(teacher);
+                    db.reference.onDisconnect();
+                    Common.teacher = null;
                     dialog.dismiss();
                 } else {
                     if (edt_name.getText().toString().equals("")) {

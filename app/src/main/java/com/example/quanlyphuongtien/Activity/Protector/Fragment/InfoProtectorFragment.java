@@ -79,6 +79,7 @@ public class InfoProtectorFragment extends Fragment {
             public void onClick(View v) {
                 getActivity().finish();
                 protector = null;
+                db.reference.onDisconnect();
                 startActivity(new Intent(getContext(), MainActivity.class));
             }
         });

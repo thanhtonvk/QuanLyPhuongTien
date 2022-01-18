@@ -7,6 +7,8 @@ public class Common {
     public static String contentQR;
     public static String idStudent;
     public static Location lStudent;
+    public static boolean flagTeacher = false;
+    public static boolean flagProtector = false;
 
     public static double checkLocation() {
         double AVERAGE_RADIUS_OF_EARTH_KM = 6371;
@@ -18,6 +20,6 @@ public class Common {
                 * Math.sin(lngDistance / 2) * Math.sin(lngDistance / 2);
 
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        return Math.round(AVERAGE_RADIUS_OF_EARTH_KM * c)*1000;
+        return Math.round(AVERAGE_RADIUS_OF_EARTH_KM * c) * 1000;
     }
 }
