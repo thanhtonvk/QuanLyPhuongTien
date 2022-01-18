@@ -68,9 +68,11 @@ public class MainActivity extends AppCompatActivity {
                         remember = new Remember(edt_username.getText().toString(), edt_password.getText().toString(), 0, 1);
                     }
                     if (rd_teacher.isChecked()) {
+                        Common.flagTeacher = false;
                         remember = new Remember(edt_username.getText().toString(), edt_password.getText().toString(), 1, 1);
                     }
                     if (rd_protector.isChecked()) {
+                        Common.flagProtector = false;
                         remember = new Remember(edt_username.getText().toString(), edt_password.getText().toString(), 2, 1);
                     }
                     if (rd_admin.isChecked()) {

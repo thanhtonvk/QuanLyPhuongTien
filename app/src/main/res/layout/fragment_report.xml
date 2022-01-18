@@ -45,12 +45,12 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/tv_idhs"
+        android:id="@+id/tv_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="10dp"
-        android:text="Chi tiết thông tin"
+        android:text="Ngày"
         android:textColor="#1E88E5"
         android:textSize="18sp" />
 

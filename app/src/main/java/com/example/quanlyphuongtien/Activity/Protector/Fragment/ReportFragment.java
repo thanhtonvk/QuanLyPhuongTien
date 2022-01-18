@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,7 +28,9 @@ import com.google.firebase.database.ValueEventListener;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ReportFragment extends Fragment {
@@ -44,6 +47,8 @@ public class ReportFragment extends Fragment {
     Button btn_search;
     ListView lv_report;
     TicketDBContext dbContext;
+    TextView tv_date;
+    String now;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -60,6 +65,7 @@ public class ReportFragment extends Fragment {
         dbContext = new TicketDBContext(getContext());
         search = new ArrayList<>();
         btn_report = view.findViewById(R.id.btn_report);
+        tv_date = view.findViewById(R.id.tv_date);
 
     }
 
@@ -90,23 +96,32 @@ public class ReportFragment extends Fragment {
         btn_report.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (edt_search.getText().toString().equals("")) {
-                    WriteFile(ticketList);
-                } else {
-                    for (Ticket ticket : ticketList
-                    ) {
-
-                        if (ticket.getReceveDate() != null) {
-                            if (ticket.getReceveDate().contains(edt_search.getText().toString()))
+                search.clear();
+                for (Ticket ticket : ticketList
+                ) {
+                    if (ticket.getReceveDate() != null) {
+                        if (!edt_search.getText().toString().equals("")) {
+                            if (ticket.getReceveDate().contains(edt_search.getText().toString())) {
                                 search.add(ticket);
+                            }
+                        } else {
+                            if (ticket.getReceveDate().contains(now)) {
+                                search.add(ticket);
+                            }
                         }
+
                     }
-                    WriteFile(search);
+
                 }
+                WriteFile(search);
                 sendFile();
 
             }
         });
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        Date date = new Date();
+        now = formatter.format(date);
+        tv_date.setText("Ngày: " + now);
     }
 
     public void sendFile() {
@@ -156,10 +171,20 @@ public class ReportFragment extends Fragment {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()
                 ) {
                     Ticket ticket = dataSnapshot.getValue(Ticket.class);
+
                     ticketList.add(ticket);
+
+
                 }
                 if (getContext() != null) {
-                    adapter = new ListReportAdapter(getContext(), ticketList);
+                    List<Ticket> tmp = new ArrayList<>();
+                    for (Ticket ticket : ticketList
+                    ) {
+                        if (ticket.getSendDate().contains(now)) {
+                            tmp.add(ticket);
+                        }
+                    }
+                    adapter = new ListReportAdapter(getContext(), tmp);
                     lv_report.setAdapter(adapter);
                 }
 
