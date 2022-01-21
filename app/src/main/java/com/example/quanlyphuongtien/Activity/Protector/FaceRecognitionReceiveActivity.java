@@ -149,7 +149,7 @@ public class FaceRecognitionReceiveActivity extends AppCompatActivity {
         btn_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (acc >= 0.5) {
+                if (acc >= 0.3) {
                     if (Common.checkLocation() <= 500) {
                         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
                         Date date = new Date();
@@ -199,7 +199,7 @@ public class FaceRecognitionReceiveActivity extends AppCompatActivity {
                                 TensorBuffer outputFeature0 = outputs.getOutputFeature0AsTensorBuffer();
                                 int max = getMax(outputFeature0.getFloatArray());
                                 acc = outputFeature0.getFloatArray()[max];
-                                if (acc > 0.5) {
+                                if (acc > 0.3) {
                                     tv_id.setText("Mã học sinh" + GetLabels().get(max));
                                     if (getStudent(GetLabels().get(max)).getName() != null) {
                                         tv_name.setText("Họ tên: " + getStudent(GetLabels().get(max)).getName());
@@ -321,7 +321,7 @@ public class FaceRecognitionReceiveActivity extends AppCompatActivity {
     private int getMax(float[] arr) {
         int index = 0;
         float min = 0.0f;
-        for (int i = 0; i < 14; i++) {
+        for (int i = 0; i < 100; i++) {
             if (arr[i] > min) {
                 index = i;
                 min = arr[i];

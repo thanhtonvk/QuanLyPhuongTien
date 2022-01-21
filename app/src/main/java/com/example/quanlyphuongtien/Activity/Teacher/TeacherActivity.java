@@ -56,11 +56,11 @@ public class TeacherActivity extends AppCompatActivity {
                     case 1:
                         bottomNav.getMenu().findItem(R.id.menu_update_teacher).setChecked(true);
                         break;
-                    case 2:
-                        bottomNav.getMenu().findItem(R.id.menu_confirm_teacher).setChecked(true);
-                        break;
-                    case 3:
-                        bottomNav.getMenu().findItem(R.id.menu_add_teacher).setChecked(true);
+//                    case 2:
+//                        bottomNav.getMenu().findItem(R.id.menu_confirm_teacher).setChecked(true);
+//                        break;
+//                    case 3:
+//                        bottomNav.getMenu().findItem(R.id.menu_add_teacher).setChecked(true);
                 }
             }
 
@@ -79,12 +79,12 @@ public class TeacherActivity extends AppCompatActivity {
                     case R.id.menu_update_teacher:
                         viewPager.setCurrentItem(1);
                         break;
-                    case R.id.menu_confirm_teacher:
-                        viewPager.setCurrentItem(2);
-                        break;
-                    case R.id.menu_add_teacher:
-                        viewPager.setCurrentItem(3);
-                        break;
+//                    case R.id.menu_confirm_teacher:
+//                        viewPager.setCurrentItem(2);
+//                        break;
+//                    case R.id.menu_add_teacher:
+//                        viewPager.setCurrentItem(3);
+//                        break;
                 }
                 return true;
             }

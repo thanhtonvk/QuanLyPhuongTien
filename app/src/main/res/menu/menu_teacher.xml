@@ -8,12 +8,12 @@
         android:id="@+id/menu_update_teacher"
         android:icon="@drawable/ic_update"
         android:title="Cập nhật học sinh" />
-    <item
-        android:id="@+id/menu_confirm_teacher"
-        android:icon="@drawable/ic_confirm"
-        android:title="Xác nhận nộp phí" />
-    <item
-        android:id="@+id/menu_add_teacher"
-        android:icon="@drawable/ic_add"
-        android:title="Tổng hợp" />
+<!--    <item-->
+    <!--        android:id="@+id/menu_confirm_teacher"-->
+    <!--        android:icon="@drawable/ic_confirm"-->
+    <!--        android:title="Xác nhận nộp phí" />-->
+    <!--    <item-->
+    <!--        android:id="@+id/menu_add_teacher"-->
+    <!--        android:icon="@drawable/ic_add"-->
+    <!--        android:title="Tổng hợp" />-->
 </menu>

@@ -9,7 +9,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -60,7 +59,7 @@ public class StudentActivity extends AppCompatActivity implements LocationListen
                     try {
                         Common.lStudent = new com.example.quanlyphuongtien.Entities.Location(location.getLatitude(), location.getLongitude());
                         addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-                        Toast.makeText(StudentActivity.this, "Bạn đang ở " + addresses.get(0).getAddressLine(0), Toast.LENGTH_LONG).show();
+                        //Toast.makeText(StudentActivity.this, "Bạn đang ở trường T" , Toast.LENGTH_LONG).show();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

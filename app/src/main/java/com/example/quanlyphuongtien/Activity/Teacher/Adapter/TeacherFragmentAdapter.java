@@ -5,8 +5,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
-import com.example.quanlyphuongtien.Activity.Teacher.Fragment.ConfirmFragment;
-import com.example.quanlyphuongtien.Activity.Teacher.Fragment.GeneralFragment;
 import com.example.quanlyphuongtien.Activity.Teacher.Fragment.InfoFragment;
 import com.example.quanlyphuongtien.Activity.Teacher.Fragment.UpdateFragment;
 
@@ -23,10 +21,6 @@ public class TeacherFragmentAdapter extends FragmentStatePagerAdapter {
                 return new InfoFragment();
             case 1:
                 return new UpdateFragment();
-            case 2:
-                return new ConfirmFragment();
-            case 3:
-                return new GeneralFragment();
             default:
                 return new InfoFragment();
         }
@@ -34,6 +28,6 @@ public class TeacherFragmentAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return 4;
+        return 2;
     }
 }
